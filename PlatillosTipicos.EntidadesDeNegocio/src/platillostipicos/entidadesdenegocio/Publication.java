@@ -6,20 +6,28 @@ import java.util.UUID;
 public class Publication {
 
     private int top_aux;
-    private UUID id;
-    private String description;
-    private LocalDateTime publicationDate;
-    private UUID userId;
-    private User user;
+    private UUID Id;
+    private boolean Repost;
+    private String Description;
+    private LocalDateTime PublicationDate;
+    private UUID UserId;
+    private UUID PublicationImagesId;
+    private UUID RestaurantId;
+    private User User;
+//        private PublicationImages? PublicationImages;
+//        private Restaurant? Restaurant;
 
     public Publication() {
     }
 
-    public Publication(UUID id, String description, LocalDateTime publicationDate, UUID userId) {
-        this.id = id;
-        this.description = description;
-        this.publicationDate = publicationDate;
-        this.userId = userId;
+    public Publication(UUID Id, boolean Repost, String Description, LocalDateTime PublicationDate, UUID UserId, UUID PublicationImagesId, UUID RestaurantId) {
+        this.Id = Id;
+        this.Repost = Repost;
+        this.Description = Description;
+        this.PublicationDate = PublicationDate;
+        this.UserId = UserId;
+        this.PublicationImagesId = PublicationImagesId;
+        this.RestaurantId = RestaurantId;
     }
 
     public int getTop_aux() {
@@ -31,42 +39,68 @@ public class Publication {
     }
 
     public UUID getId() {
-        return id;
+        return Id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setId(UUID Id) {
+        this.Id = Id;
+    }
+
+    public boolean isRepost() {
+        return Repost;
+    }
+
+    public void setRepost(boolean Repost) {
+        this.Repost = Repost;
     }
 
     public String getDescription() {
-        return description;
+        return Description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String Description) {
+        this.Description = Description;
     }
 
     public LocalDateTime getPublicationDate() {
-        return publicationDate;
+        return PublicationDate;
     }
 
-    public void setPublicationDate(LocalDateTime publicationDate) {
-        this.publicationDate = publicationDate;
+    public void setPublicationDate(LocalDateTime PublicationDate) {
+        this.PublicationDate = PublicationDate;
     }
 
     public UUID getUserId() {
-        return userId;
+        return UserId;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setUserId(UUID UserId) {
+        this.UserId = UserId;
+    }
+
+    public UUID getPublicationImagesId() {
+        return PublicationImagesId;
+    }
+
+    public void setPublicationImagesId(UUID PublicationImagesId) {
+        this.PublicationImagesId = PublicationImagesId;
+    }
+
+    public UUID getRestaurantId() {
+        return RestaurantId;
+    }
+
+    public void setRestaurantId(UUID RestaurantId) {
+        this.RestaurantId = RestaurantId;
     }
 
     public User getUser() {
-        return user;
+        return User;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User User) {
+        this.User = User;
     }
+
+    
 }
