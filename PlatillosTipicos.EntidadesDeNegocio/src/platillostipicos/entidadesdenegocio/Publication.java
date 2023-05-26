@@ -6,32 +6,32 @@ import java.util.UUID;
 public class Publication {
 
     private int top_aux;
-    private UUID Id;
-    private boolean Repost;
-    private String Description;
-    private LocalDateTime PublicationDate;
-    private UUID UserId;
-    private UUID PublicationImagesId;
-    private UUID RestaurantId;
-    private User User;
-//        private PublicationImages? PublicationImages;
-//        private Restaurant? Restaurant;
+    private UUID id;
+    private boolean repost;
+    private String description;
+    private LocalDateTime publicationDate;
+    private UUID userId;
+    private UUID publicationImagesId;
+    private UUID restaurantId;
+    private User user;
+     private PublicationImages publicationImages;
+    // private Restaurant restaurant;
 
     public Publication() {
     }
 
-    public Publication(UUID Id, boolean Repost, String Description, LocalDateTime PublicationDate, UUID UserId, UUID PublicationImagesId, UUID RestaurantId) {
-        this.Id = Id;
-        this.Repost = Repost;
-        this.Description = Description;
-        this.PublicationDate = PublicationDate;
-        this.UserId = UserId;
-        this.PublicationImagesId = PublicationImagesId;
-        this.RestaurantId = RestaurantId;
+    public Publication(UUID id, boolean repost, String description, LocalDateTime publicationDate, UUID userId, UUID publicationImagesId, UUID restaurantId) {
+        this.id = id;
+        this.repost = repost;
+        this.description = description;
+        this.publicationDate = publicationDate;
+        this.userId = userId;
+        this.publicationImagesId = publicationImagesId;
+        this.restaurantId = restaurantId;
     }
 
     public int getTop_aux() {
-        return top_aux;
+          return top_aux;
     }
 
     public void setTop_aux(int top_aux) {
@@ -39,68 +39,76 @@ public class Publication {
     }
 
     public UUID getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(UUID Id) {
-        this.Id = Id;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public boolean isRepost() {
-        return Repost;
+        return repost;
     }
 
-    public void setRepost(boolean Repost) {
-        this.Repost = Repost;
+    public void setRepost(boolean repost) {
+        this.repost = repost;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
-    public void setDescription(String Description) {
-        this.Description = Description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getPublicationDate() {
-        return PublicationDate;
+        return publicationDate;
     }
 
-    public void setPublicationDate(LocalDateTime PublicationDate) {
-        this.PublicationDate = PublicationDate;
+    public void setPublicationDate(LocalDateTime publicationDate) {
+        this.publicationDate = publicationDate;
     }
 
     public UUID getUserId() {
-        return UserId;
+        return userId;
     }
 
-    public void setUserId(UUID UserId) {
-        this.UserId = UserId;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public UUID getPublicationImagesId() {
-        return PublicationImagesId;
+        return publicationImagesId;
     }
 
-    public void setPublicationImagesId(UUID PublicationImagesId) {
-        this.PublicationImagesId = PublicationImagesId;
+    public void setPublicationImagesId(UUID publicationImagesId) {
+        this.publicationImagesId = publicationImagesId;
     }
 
     public UUID getRestaurantId() {
-        return RestaurantId;
+        return restaurantId;
     }
 
-    public void setRestaurantId(UUID RestaurantId) {
-        this.RestaurantId = RestaurantId;
+    public void setRestaurantId(UUID restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public User getUser() {
-        return User;
+        return user;
     }
 
-    public void setUser(User User) {
-        this.User = User;
+    public void setUser(User user) {
+        this.user = user;
     }
 
+    public PublicationImages getPublicationImages() {
+        return publicationImages;
+    }
+
+    public void setPublicationImages(PublicationImages publicationImages) {
+        this.publicationImages = publicationImages;
+    }
+    
     
 }
