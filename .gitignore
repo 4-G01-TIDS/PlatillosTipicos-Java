@@ -1,0 +1,27 @@
+# Ignorar archivos privados de los proyectos
+PlatillosTipicos.AccesoADatos/nbproject/private/private.properties
+PlatillosTipicos.AppDesktop/nbproject/private/private.properties
+PlatillosTipicos.EntidadesDeNegocio/nbproject/private/private.properties
+
+# Ignorar archivos y directorios privados de los proyectos
+PlatillosTipicos.AccesoADatos/nbproject/private/
+PlatillosTipicos.AppDesktop/nbproject/private/
+PlatillosTipicos.EntidadesDeNegocio/nbproject/private/
+
+# Ignorar archivos XML privados de los proyectos
+PlatillosTipicos.AccesoADatos/nbproject/private/*.xml
+PlatillosTipicos.AppDesktop/nbproject/private/*.xml
+PlatillosTipicos.EntidadesDeNegocio/nbproject/private/*.xml
+
+# Ignorar directorios de compilación y distribución
+/PlatillosTipicos.AccesoADatos/build/
+/PlatillosTipicos.EntidadesDeNegocio/dist/
+/PlatillosTipicos.EntidadesDeNegocio/build/
+/PlatillosTipicos.AccesoADatos/dist/
+/PlatillosTipicos.AppDesktop/build/
+/PlatillosTipicos.AppDesktop/dist/
+
+
+
+
+/PlatillosTipicos.AccesoADatos/src/platillostipicos/accesoadatos/ComunDB.java
