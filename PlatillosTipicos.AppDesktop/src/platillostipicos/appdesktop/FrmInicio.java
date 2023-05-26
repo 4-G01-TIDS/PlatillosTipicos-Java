@@ -30,6 +30,7 @@ public class FrmInicio extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         meIniciarSession = new javax.swing.JMenu();
         meRegister = new javax.swing.JMenu();
+        meExplorar = new javax.swing.JMenu();
         meSalir = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -57,6 +58,18 @@ public class FrmInicio extends javax.swing.JFrame {
             }
         });
         jMenuBar1.add(meRegister);
+
+        meExplorar.setText("Explorar");
+        meExplorar.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                meExplorarMenuSelected(evt);
+            }
+        });
+        jMenuBar1.add(meExplorar);
 
         meSalir.setText("Salir");
         meSalir.addMenuListener(new javax.swing.event.MenuListener() {
@@ -101,9 +114,20 @@ public class FrmInicio extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_meSalirMenuSelected
 
+    private void meExplorarMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_meExplorarMenuSelected
+        // TODO add your handling code here:
+        
+        
+        FrmExplorar frmExplorar = new FrmExplorar(this);
+        frmExplorar.setVisible(true);
+        this.setEnabled(false);
+        this.setVisible(false);
+    }//GEN-LAST:event_meExplorarMenuSelected
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu meExplorar;
     private javax.swing.JMenu meIniciarSession;
     private javax.swing.JMenu meRegister;
     private javax.swing.JMenu meSalir;

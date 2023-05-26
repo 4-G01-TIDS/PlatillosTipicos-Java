@@ -20,6 +20,14 @@
             <EventHandler event="menuSelected" listener="javax.swing.event.MenuListener" parameters="javax.swing.event.MenuEvent" handler="meRegisterMenuSelected"/>
           </Events>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="meExplorar">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Explorar"/>
+          </Properties>
+          <Events>
+            <EventHandler event="menuSelected" listener="javax.swing.event.MenuListener" parameters="javax.swing.event.MenuEvent" handler="meExplorarMenuSelected"/>
+          </Events>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="meSalir">
           <Properties>
             <Property name="text" type="java.lang.String" value="Salir"/>
