@@ -62,6 +62,14 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 this.cbRestaurants.setEnabled(false);
                 llenarControles(pPublication);
                 break;
+                case FormEscOpcion.VER:
+                btnOk.setText("Ver"); // modificar el texto del boton btnOk a "Ver" cuando la pOpcionForm sea VER
+                btnOk.setVisible(false); // ocultar el boton btnOk cuando pOpcionForm sea opcion VER
+                this.setTitle("Ver el Publicacion"); // modificar el titulo de la pantalla de FrmRolEsc
+                this.txtComentario.setEditable(false);
+                this.cbRestaurants.setEnabled(false);
+                llenarControles(pPublication);// llamar el metodo llenarControles para llenar los controles del formulario con los datos de la clase usuario
+                break;
             default:
                 break;
         }

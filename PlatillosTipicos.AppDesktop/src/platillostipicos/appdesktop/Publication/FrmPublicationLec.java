@@ -216,6 +216,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         btnModificar1 = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnVer = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         meInicio = new javax.swing.JMenu();
 
@@ -279,7 +280,16 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             }
         });
 
-        meInicio.setText("Logo");
+        btnVer.setMnemonic('V');
+        btnVer.setText("Ver");
+        btnVer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerActionPerformed(evt);
+            }
+        });
+
+        meInicio.setText("INICIO");
+        meInicio.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         meInicio.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
@@ -306,7 +316,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnModificar1)
                         .addGap(18, 18, 18)
-                        .addComponent(btnEliminar))
+                        .addComponent(btnEliminar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnVer))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(btnBuscar))
@@ -315,7 +327,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(544, Short.MAX_VALUE))
+                .addContainerGap(454, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,11 +338,12 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addComponent(btnBuscar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewPublication)
                     .addComponent(btnModificar1)
-                    .addComponent(btnEliminar))
+                    .addComponent(btnEliminar)
+                    .addComponent(btnVer))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -370,6 +383,11 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.abrirFormularioDeEscritura(FormEscOpcion.ELIMINAR);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
+        // TODO add your handling code here:
+        this.abrirFormularioDeEscritura(FormEscOpcion.VER);
+    }//GEN-LAST:event_btnVerActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
@@ -377,6 +395,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnModificar1;
     private javax.swing.JButton btnNewPublication;
+    private javax.swing.JButton btnVer;
     private javax.swing.JComboBox<ItemsCombo> cbRestaurants;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
