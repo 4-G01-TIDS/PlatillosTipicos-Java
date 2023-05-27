@@ -215,6 +215,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         btnBuscar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         btnModificar1 = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         meInicio = new javax.swing.JMenu();
 
@@ -270,6 +271,14 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             }
         });
 
+        btnEliminar.setMnemonic('E');
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
         meInicio.setText("Logo");
         meInicio.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
@@ -295,7 +304,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(btnNewPublication)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModificar1))
+                        .addComponent(btnModificar1)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(btnBuscar))
@@ -304,7 +315,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(544, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -318,7 +329,8 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewPublication)
-                    .addComponent(btnModificar1))
+                    .addComponent(btnModificar1)
+                    .addComponent(btnEliminar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -353,9 +365,15 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.abrirFormularioDeEscritura(FormEscOpcion.MODIFICAR);
     }//GEN-LAST:event_btnModificar1ActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        this.abrirFormularioDeEscritura(FormEscOpcion.ELIMINAR);
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnModificar1;
     private javax.swing.JButton btnNewPublication;

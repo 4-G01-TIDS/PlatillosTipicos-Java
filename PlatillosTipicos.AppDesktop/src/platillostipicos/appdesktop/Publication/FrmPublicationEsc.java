@@ -54,6 +54,14 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 this.cbRestaurants.setVisible(false);
                 llenarControles(pPublication);
                 break;
+            case FormEscOpcion.ELIMINAR:
+                btnOk.setText("Eliminar");
+                this.btnOk.setMnemonic('E');
+                this.setTitle("Eliminar el Publicacion");
+                this.txtComentario.setEditable(false);
+                this.cbRestaurants.setEnabled(false);
+                llenarControles(pPublication);
+                break;
             default:
                 break;
         }
@@ -126,6 +134,10 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                             // si la propiedad opcionForm es MODIFICAR actualizar esos datos en la base de datos
                             resultado = PublicationDAL.modificar(this.publicationActual);
                             break;
+                        case FormEscOpcion.ELIMINAR:
+                            // si la propiedad opcionForm es ELIMINAR entonces quitamos ese registro de la base de datos
+                            resultado = PublicationDAL.eliminar(this.publicationActual);
+                            break;
                         default:
                             break;
                     }
@@ -146,8 +158,6 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 }
             }
         } catch (Exception ex) {
-            // En el caso que suceda un error al ejecutar la consulta en la base de datos 
-            // mostrar el siguiente mensaje al usuario "Sucedio un error al momento de actualizar los datos"
             JOptionPane.showMessageDialog(this, "Sucedio el siguiente error: " + ex.getMessage());
         }
 
