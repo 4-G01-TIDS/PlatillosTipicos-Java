@@ -9,16 +9,19 @@ package platillostipicos.appdesktop.utils;
  * @author edefl
  */
 public class ItemsCombo {
-     private int id;
+
+    private int id;
     private String label;
+    private String value;
     // getter y setter
 
     public ItemsCombo() {
     }
 
-    public ItemsCombo(int id, String label) {
+    public ItemsCombo(int id, String label, String value) {
         this.id = id;
         this.label = label;
+        this.value = value;
     }
 
     public String toString() {
@@ -40,6 +43,15 @@ public class ItemsCombo {
     public void setLabel(String label) {
         this.label = label;
     }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -55,4 +67,3 @@ public class ItemsCombo {
         return true;
     }
 }
-
