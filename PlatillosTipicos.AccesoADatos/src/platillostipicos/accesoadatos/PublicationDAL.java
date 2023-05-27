@@ -2,10 +2,9 @@ package platillostipicos.accesoadatos;
 
 import platillostipicos.entidadesdenegocio.Publication;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.HashMap;
@@ -13,6 +12,37 @@ import platillostipicos.entidadesdenegocio.*;
 
 public class PublicationDAL {
 
+    // <editor-fold defaultstate="collapsed" desc="CREATE">
+    public static int crear(Publication pPublication) throws Exception {
+        int result;
+        String sql;
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            sql = "INSERT INTO Publications(Description,PublicationDate,UserId,PublicationImagesId,RestaurantId) VALUES(?,?,?,?,?)";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublication.getDescription());
+                // Fecha y hora actual
+                LocalDateTime now = LocalDateTime.now();
+                Timestamp timestamp = Timestamp.valueOf(now);
+                ps.setTimestamp(2, timestamp);
+                //
+                ps.setString(3, pPublication.getUserId().toString());
+                UUID publicationImagesId = pPublication.getPublicationImagesId();
+                ps.setString(4, publicationImagesId != null ? publicationImagesId.toString() : null);
+                ps.setString(5, pPublication.getRestaurantId().toString());
+                result = ps.executeUpdate();
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        return result;
+    }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="READ">
     static String obtenerCampos() {
         return "u.Id, u.Description, u.PublicationDate, u.UserId, u.PublicationImagesId, u.RestaurantId";
     }
@@ -103,4 +133,5 @@ public class PublicationDAL {
         return publications;
     }
 
+    // </editor-fold> 
 }
