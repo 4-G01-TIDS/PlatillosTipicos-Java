@@ -130,7 +130,6 @@ CREATE TABLE [dbo].[PublicationImages](
 --Crear tabla de Publications
 CREATE TABLE [dbo].[Publications](
 	[Id][uniqueidentifier] PRIMARY KEY DEFAULT NEWID(),
-	[Repost][bit] NOT NULL DEFAULT 0,
 	[Description][varchar](500) NULL,
 	[PublicationDate][datetime] NOT NULL DEFAULT GETDATE(),
 	[UserId][uniqueidentifier] NOT NULL,
@@ -472,6 +471,6 @@ VALUES
 (261, 'Santiago de María', 14),
 (262, 'Tecapán', 14);	
 
-INSERT INTO Restaurants(Name, Latitude, Longitude, RestaurantImagesId, UserId, MunicipalityId) VALUES
-('RestaurantInicial', 13.732685, -89.373997, '0a37f2b0-ee1f-11ed-a05b-0242ac120003', '23366d79-f322-4448-9e55-1518fc0c34b0', 75
+INSERT INTO Restaurants(Id, Name, Latitude, Longitude, RestaurantImagesId, UserId, MunicipalityId) VALUES
+('807487cc-fc4d-11ed-be56-0242ac120002', 'RestaurantInicial', 13.732685, -89.373997, '0a37f2b0-ee1f-11ed-a05b-0242ac120003', '23366d79-f322-4448-9e55-1518fc0c34b0', 75
 );
