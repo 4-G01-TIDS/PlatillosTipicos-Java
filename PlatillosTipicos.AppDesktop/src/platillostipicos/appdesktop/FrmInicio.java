@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package platillostipicos.appdesktop;
 
-/**
- *
- * @author edefl
- */
+import platillostipicos.appdesktop.Publication.FrmPublicationLec;
+
 public class FrmInicio extends javax.swing.JFrame {
 
     /**
@@ -116,9 +110,8 @@ public class FrmInicio extends javax.swing.JFrame {
 
     private void meExplorarMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_meExplorarMenuSelected
         // TODO add your handling code here:
-        
-        
-        FrmExplorar frmExplorar = new FrmExplorar(this);
+
+        FrmPublicationLec frmExplorar = new FrmPublicationLec(this);
         frmExplorar.setVisible(true);
         this.setEnabled(false);
         this.setVisible(false);

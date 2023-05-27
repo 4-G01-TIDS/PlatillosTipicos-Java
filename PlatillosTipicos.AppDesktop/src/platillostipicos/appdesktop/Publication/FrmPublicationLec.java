@@ -1,26 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package platillostipicos.appdesktop;
+package platillostipicos.appdesktop.Publication;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.UUID;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import platillostipicos.accesoadatos.PublicationDAL;
+import platillostipicos.appdesktop.FrmInicio;
 import platillostipicos.appdesktop.utils.*;
 import platillostipicos.entidadesdenegocio.Publication;
 
-public class FrmExplorar extends javax.swing.JFrame {
+public final class FrmPublicationLec extends javax.swing.JFrame {
+    
+    private javax.swing.JFrame frmPadre; // Propiedad para almacenar la pantalla de Inicio del sistema
 
-    // <editor-fold defaultstate="collapsed" desc="Codigo para las clases,propiedades y metodos locales del formulario FrmExplorar">
+    // <editor-fold defaultstate="collapsed" desc="Codigo para las clases,propiedades y metodos locales del formulario FrmPublicationLec">
     // Crear la clase anidada ColumnaTabla para saber la posicion de las columnas en la tabla de datos
     public class ColumnaTabla {
-
+        
         static final int ID = 0;
         static final int DESCRIPTION = 1;
         static final int PUBLICATIONDATE = 2;
@@ -32,9 +32,9 @@ public class FrmExplorar extends javax.swing.JFrame {
         static final int IMAGE3 = 8;
         static final int IMAGE4 = 9;
         static final int IMAGE5 = 10;
-
+        
     }
-
+    
     private void ocultarColumnasDeLaTabla(int pColumna) {
         this.tbPublication.getColumnModel().getColumn(pColumna).setMaxWidth(0); // le dejamos en el ancho maximo de la tabla en cero en la columna
         this.tbPublication.getColumnModel().getColumn(pColumna).setMinWidth(0);// le dejamos en el ancho minimo de la tabla en cero  en la columna
@@ -43,17 +43,24 @@ public class FrmExplorar extends javax.swing.JFrame {
         // le dejamos en el ancho minimo de la tabla en cero  en el header
         this.tbPublication.getTableHeader().getColumnModel().getColumn(pColumna).setMinWidth(0);
     }
-
-    private void publications() {
+    
+    public void buscar() {
         try {
-            Publication publication = new Publication();
-            ArrayList<Publication> publications = PublicationDAL.getPublications(publication);
+            Publication publicationSearch = new Publication();
+            ItemsCombo itemsCbPublications = (ItemsCombo) cbRestaurants.getSelectedItem();
+            if (itemsCbPublications.getValue().trim().isEmpty()) {
+                publicationSearch.setRestaurantId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+            } else {
+                publicationSearch.setRestaurantId(UUID.fromString(itemsCbPublications.getValue()));
+                
+            }
+            ArrayList<Publication> publications = PublicationDAL.getPublications(publicationSearch);
             iniciarDatosDeLaTabla(publications);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Sucedio el siguiente error: " + ex.getMessage());
         }
     }
-
+    
     public void iniciarDatosDeLaTabla(ArrayList<Publication> pPublications) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -61,7 +68,7 @@ public class FrmExplorar extends javax.swing.JFrame {
                 return false;
             }
         };
-
+        
         model.addColumn("Id");
         model.addColumn("Descripcion");
         model.addColumn("Fecha de publicacion");
@@ -73,10 +80,10 @@ public class FrmExplorar extends javax.swing.JFrame {
         model.addColumn("Imagen3");
         model.addColumn("Imagen4");
         model.addColumn("Imagen5");
-
+        
         this.tbPublication.setModel(model);
         Object row[] = null;
-
+        
         for (int i = 0; i < pPublications.size(); i++) {
             Publication publication = pPublications.get(i);
             model.addRow(row);
@@ -91,14 +98,14 @@ public class FrmExplorar extends javax.swing.JFrame {
             byte[] imageBytes3 = publication.getPublicationImages().getImagePublication3();
             byte[] imageBytes4 = publication.getPublicationImages().getImagePublication4();
             byte[] imageBytes5 = publication.getPublicationImages().getImagePublication5();
-
+            
             configurarColumnaImagen(ColumnaTabla.IMAGE1, imageBytes1, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE2, imageBytes2, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE4, imageBytes4, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE5, imageBytes5, i, model);
         }
-
+        
         tbPublication.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -118,38 +125,63 @@ public class FrmExplorar extends javax.swing.JFrame {
                 }
             }
         });
-
+        
         ocultarColumnasDeLaTabla(ColumnaTabla.ID);
         ocultarColumnasDeLaTabla(ColumnaTabla.USERID);
         ocultarColumnasDeLaTabla(ColumnaTabla.PUBLICATIONIMAGESID);
         ocultarColumnasDeLaTabla(ColumnaTabla.RESTAURANTID);
     }
-
+    
     private void configurarColumnaImagen(int columna, byte[] imageBytes, int row, DefaultTableModel model) {
         if (imageBytes != null) {
             int cellHeight = 200; // Ajusta la altura según tus necesidades
             int tableWidth = 200; // Obtener el ancho actual de la tabla
-          //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
+            //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
 
             ImageRenderer imageRenderer = new ImageRenderer(cellHeight, tableWidth);
-
+            
             tbPublication.getColumnModel().getColumn(columna).setCellRenderer(imageRenderer);
             model.setValueAt(imageBytes, row, columna);
         }
     }
-
-    public FrmExplorar(javax.swing.JFrame pFrmPadre) {
-
+    
+    private void abrirFormularioDeEscritura(int pOpcionForm) {
+        Publication publication = new Publication();
+        if (pOpcionForm == FormEscOpcion.CREAR) {
+            FrmPublicationEsc frmPublicationEsc = new FrmPublicationEsc(publication, pOpcionForm, this);
+            frmPublicationEsc.setVisible(true); // Mostrar el formulario FrmUsuarioEsc
+            this.setVisible(false); // ocultar el formulario FrmUsuarioLec
+        } else {
+            // en el caso que pOpcionForm sea diferente a Crear y el metodo llenarEntidadConLaFilaSeleccionadaDeLaTabla devuelva false
+            // se le notificara al usuario del sistema que debe de seleccionar una fila de la tabla 
+            JOptionPane.showMessageDialog(this, "No ha seleccionado ninguna fila.");
+        }
+        
+    }
+    
+    public void iniciarComboRestaurant(javax.swing.JComboBox<ItemsCombo> pJComboBox, javax.swing.JFrame pFrame) {
+        pJComboBox.addItem(new ItemsCombo(0, "SELECCIONAR", ""));
+        pJComboBox.addItem(new ItemsCombo(1, "Restaurante", "807487cc-fc4d-11ed-be56-0242ac120002"));
+    }
+    
+    private void iniciarDatos(javax.swing.JFrame pFrmPadre) {
+        frmPadre = pFrmPadre;
+        pFrmPadre.setEnabled(true); // deshabilitar el formulario FrmInicio
+        iniciarComboRestaurant(this.cbRestaurants, this.frmPadre);
+        buscar();
+    }
+    
+    public FrmPublicationLec(javax.swing.JFrame pFrmPadre) {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
-        publications();
+        iniciarDatos(pFrmPadre);
     }
 // </editor-fold> 
 
     /**
      * Creates new form FrmExplorar
      */
-    public FrmExplorar() {
+    public FrmPublicationLec() {
         initComponents();
     }
 
@@ -166,6 +198,10 @@ public class FrmExplorar extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbPublication = new javax.swing.JTable();
+        btnNewPublication = new javax.swing.JButton();
+        cbRestaurants = new javax.swing.JComboBox<>();
+        btnBuscar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         meInicio = new javax.swing.JMenu();
 
@@ -188,6 +224,23 @@ public class FrmExplorar extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tbPublication);
 
+        btnNewPublication.setText("Crear Publicacion");
+        btnNewPublication.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewPublicationActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setMnemonic('B');
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Restaurante");
+
         meInicio.setText("Logo");
         meInicio.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
@@ -207,11 +260,33 @@ public class FrmExplorar extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnNewPublication))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(btnBuscar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(191, 191, 191)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 199, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(btnBuscar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addComponent(btnNewPublication)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -225,8 +300,22 @@ public class FrmExplorar extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_meInicioMenuSelected
 
+    private void btnNewPublicationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewPublicationActionPerformed
+        // TODO add your handling code here:
+        this.abrirFormularioDeEscritura(FormEscOpcion.CREAR);
+    }//GEN-LAST:event_btnNewPublicationActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        this.buscar(); // llamar el metodo de buscar
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnNewPublication;
+    private javax.swing.JComboBox<ItemsCombo> cbRestaurants;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
