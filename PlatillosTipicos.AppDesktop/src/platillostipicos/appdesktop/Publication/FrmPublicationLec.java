@@ -12,15 +12,16 @@ import platillostipicos.accesoadatos.PublicationDAL;
 import platillostipicos.appdesktop.FrmInicio;
 import platillostipicos.appdesktop.utils.*;
 import platillostipicos.entidadesdenegocio.Publication;
+import platillostipicos.entidadesdenegocio.PublicationImages;
 
 public final class FrmPublicationLec extends javax.swing.JFrame {
-    
+
     private javax.swing.JFrame frmPadre; // Propiedad para almacenar la pantalla de Inicio del sistema
 
     // <editor-fold defaultstate="collapsed" desc="Codigo para las clases,propiedades y metodos locales del formulario FrmPublicationLec">
     // Crear la clase anidada ColumnaTabla para saber la posicion de las columnas en la tabla de datos
     public class ColumnaTabla {
-        
+
         static final int ID = 0;
         static final int DESCRIPTION = 1;
         static final int PUBLICATIONDATE = 2;
@@ -32,9 +33,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         static final int IMAGE3 = 8;
         static final int IMAGE4 = 9;
         static final int IMAGE5 = 10;
-        
+
     }
-    
+
     private void ocultarColumnasDeLaTabla(int pColumna) {
         this.tbPublication.getColumnModel().getColumn(pColumna).setMaxWidth(0); // le dejamos en el ancho maximo de la tabla en cero en la columna
         this.tbPublication.getColumnModel().getColumn(pColumna).setMinWidth(0);// le dejamos en el ancho minimo de la tabla en cero  en la columna
@@ -43,7 +44,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         // le dejamos en el ancho minimo de la tabla en cero  en el header
         this.tbPublication.getTableHeader().getColumnModel().getColumn(pColumna).setMinWidth(0);
     }
-    
+
     public void buscar() {
         try {
             Publication publicationSearch = new Publication();
@@ -52,7 +53,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 publicationSearch.setRestaurantId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
             } else {
                 publicationSearch.setRestaurantId(UUID.fromString(itemsCbPublications.getValue()));
-                
+
             }
             ArrayList<Publication> publications = PublicationDAL.getPublications(publicationSearch);
             iniciarDatosDeLaTabla(publications);
@@ -60,7 +61,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Sucedio el siguiente error: " + ex.getMessage());
         }
     }
-    
+
     public void iniciarDatosDeLaTabla(ArrayList<Publication> pPublications) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -68,7 +69,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 return false;
             }
         };
-        
+
         model.addColumn("Id");
         model.addColumn("Descripcion");
         model.addColumn("Fecha de publicacion");
@@ -80,10 +81,10 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         model.addColumn("Imagen3");
         model.addColumn("Imagen4");
         model.addColumn("Imagen5");
-        
+
         this.tbPublication.setModel(model);
         Object row[] = null;
-        
+
         for (int i = 0; i < pPublications.size(); i++) {
             Publication publication = pPublications.get(i);
             model.addRow(row);
@@ -98,14 +99,14 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             byte[] imageBytes3 = publication.getPublicationImages().getImagePublication3();
             byte[] imageBytes4 = publication.getPublicationImages().getImagePublication4();
             byte[] imageBytes5 = publication.getPublicationImages().getImagePublication5();
-            
+
             configurarColumnaImagen(ColumnaTabla.IMAGE1, imageBytes1, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE2, imageBytes2, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE4, imageBytes4, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE5, imageBytes5, i, model);
         }
-        
+
         tbPublication.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -125,13 +126,13 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         ocultarColumnasDeLaTabla(ColumnaTabla.ID);
         ocultarColumnasDeLaTabla(ColumnaTabla.USERID);
         ocultarColumnasDeLaTabla(ColumnaTabla.PUBLICATIONIMAGESID);
         ocultarColumnasDeLaTabla(ColumnaTabla.RESTAURANTID);
     }
-    
+
     private void configurarColumnaImagen(int columna, byte[] imageBytes, int row, DefaultTableModel model) {
         if (imageBytes != null) {
             int cellHeight = 200; // Ajusta la altura según tus necesidades
@@ -139,38 +140,48 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
 
             ImageRenderer imageRenderer = new ImageRenderer(cellHeight, tableWidth);
-            
+
             tbPublication.getColumnModel().getColumn(columna).setCellRenderer(imageRenderer);
             model.setValueAt(imageBytes, row, columna);
         }
     }
-    
+
+    private boolean llenarEntidadConLaFilaSeleccionadaDeLaTabla(Publication pPublication) {
+        int filaSelect;
+        boolean isSelectRow = false;
+        filaSelect = this.tbPublication.getSelectedRow();
+        if (filaSelect != -1) {
+            isSelectRow = true;
+            pPublication.setId((UUID) this.tbPublication.getValueAt(filaSelect, ColumnaTabla.ID));
+            pPublication.setDescription((String) this.tbPublication.getValueAt(filaSelect, ColumnaTabla.DESCRIPTION));
+        }
+        return isSelectRow;
+    }
+
     private void abrirFormularioDeEscritura(int pOpcionForm) {
         Publication publication = new Publication();
-        if (pOpcionForm == FormEscOpcion.CREAR) {
+        if (pOpcionForm == FormEscOpcion.CREAR || this.llenarEntidadConLaFilaSeleccionadaDeLaTabla(publication)) {
             FrmPublicationEsc frmPublicationEsc = new FrmPublicationEsc(publication, pOpcionForm, this);
-            frmPublicationEsc.setVisible(true); // Mostrar el formulario FrmUsuarioEsc
-            this.setVisible(false); // ocultar el formulario FrmUsuarioLec
+            frmPublicationEsc.setVisible(true);
+            this.setVisible(false);
         } else {
-            // en el caso que pOpcionForm sea diferente a Crear y el metodo llenarEntidadConLaFilaSeleccionadaDeLaTabla devuelva false
-            // se le notificara al usuario del sistema que debe de seleccionar una fila de la tabla 
             JOptionPane.showMessageDialog(this, "No ha seleccionado ninguna fila.");
         }
-        
+
     }
-    
+
     public void iniciarComboRestaurant(javax.swing.JComboBox<ItemsCombo> pJComboBox, javax.swing.JFrame pFrame) {
         pJComboBox.addItem(new ItemsCombo(0, "SELECCIONAR", ""));
         pJComboBox.addItem(new ItemsCombo(1, "Restaurante", "807487cc-fc4d-11ed-be56-0242ac120002"));
     }
-    
+
     private void iniciarDatos(javax.swing.JFrame pFrmPadre) {
         frmPadre = pFrmPadre;
         pFrmPadre.setEnabled(true); // deshabilitar el formulario FrmInicio
         iniciarComboRestaurant(this.cbRestaurants, this.frmPadre);
         buscar();
     }
-    
+
     public FrmPublicationLec(javax.swing.JFrame pFrmPadre) {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -196,18 +207,28 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        btnModificar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbPublication = new javax.swing.JTable();
         btnNewPublication = new javax.swing.JButton();
         cbRestaurants = new javax.swing.JComboBox<>();
         btnBuscar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        btnModificar1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         meInicio = new javax.swing.JMenu();
 
         jMenu1.setText("jMenu1");
 
         jMenu2.setText("jMenu2");
+
+        btnModificar.setMnemonic('M');
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -241,6 +262,14 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
         jLabel2.setText("Restaurante");
 
+        btnModificar1.setMnemonic('M');
+        btnModificar1.setText("Modificar");
+        btnModificar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificar1ActionPerformed(evt);
+            }
+        });
+
         meInicio.setText("Logo");
         meInicio.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
@@ -264,7 +293,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnNewPublication))
+                        .addComponent(btnNewPublication)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificar1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(btnBuscar))
@@ -285,7 +316,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addComponent(btnBuscar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                .addComponent(btnNewPublication)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNewPublication)
+                    .addComponent(btnModificar1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -310,9 +343,21 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.buscar(); // llamar el metodo de buscar
     }//GEN-LAST:event_btnBuscarActionPerformed
 
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        // TODO add your handling code here:
+        this.abrirFormularioDeEscritura(FormEscOpcion.MODIFICAR);
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnModificar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificar1ActionPerformed
+        // TODO add your handling code here:
+        this.abrirFormularioDeEscritura(FormEscOpcion.MODIFICAR);
+    }//GEN-LAST:event_btnModificar1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnModificar1;
     private javax.swing.JButton btnNewPublication;
     private javax.swing.JComboBox<ItemsCombo> cbRestaurants;
     private javax.swing.JLabel jLabel2;

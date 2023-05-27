@@ -14,6 +14,27 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
     private int opcionForm;
     private Publication publicationActual;
 
+    private void llenarControles(Publication pPublication) {
+        try {
+            publicationActual = PublicationDAL.GetById(pPublication);
+            this.txtComentario.setText(publicationActual.getDescription());
+            String restaurantIdValue = publicationActual.getRestaurantId().toString();
+
+// Recorrer los elementos del JComboBox para buscar el objeto ItemsCombo con el valor deseado
+            for (int i = 0; i < cbRestaurants.getItemCount(); i++) {
+                ItemsCombo item = cbRestaurants.getItemAt(i);
+                if (item.getValue().equals(restaurantIdValue)) {
+                    cbRestaurants.setSelectedItem(item);
+                    break; // Se encontró el elemento, salir del bucle
+                }
+            }
+
+        } catch (Exception ex) {
+            // Enviar el mensaje al usuario de la pantalla en el caso que suceda un error al obtener los datos de la base de datos
+            JOptionPane.showMessageDialog(frmPadre, "Sucedio el siguiente error: " + ex.getMessage());
+        }
+    }
+
     private void iniciarDatos(Publication pPublication, int pOpcionForm, FrmPublicationLec pFrmPadre) {
         frmPadre = pFrmPadre;
         publicationActual = new Publication();
@@ -24,6 +45,14 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
             case FormEscOpcion.CREAR:
                 this.btnOk.setMnemonic('N'); // modificar la tecla de atajo del boton btnOk a la letra N
                 this.setTitle("Crear un nueva publication");
+                break;
+            case FormEscOpcion.MODIFICAR:
+                btnOk.setText("Confirmar");
+                this.btnOk.setMnemonic('M'); // modificar la tecla de atajo del boton btnOk a la letra M
+                this.setTitle("Editar Publicacion");
+                this.lbRestaurant.setVisible(false);
+                this.cbRestaurants.setVisible(false);
+                llenarControles(pPublication);
                 break;
             default:
                 break;
@@ -84,15 +113,18 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
 
     private void enviarDatos() {
         try {
-            if (validarDatos()) { // verificar si todos los datos obligatorios tienen informacion
-                // verificar que el usuario de la pantalla presiono el boton YES
+            if (validarDatos()) {
                 if (obtenerMensajeDeConfirmacion() == JOptionPane.YES_OPTION) {
-                    llenarEntidadConLosDatosDeLosControles(); // llenar la entidad de Usuario con los datos de la caja de texto,combo box del formulario
+                    llenarEntidadConLosDatosDeLosControles();
                     int resultado = 0;
                     switch (opcionForm) {
                         case FormEscOpcion.CREAR:
                             // si la propiedad opcionForm es CREAR guardar esos datos en la base de datos
                             resultado = PublicationDAL.crear(this.publicationActual);
+                            break;
+                        case FormEscOpcion.MODIFICAR:
+                            // si la propiedad opcionForm es MODIFICAR actualizar esos datos en la base de datos
+                            resultado = PublicationDAL.modificar(this.publicationActual);
                             break;
                         default:
                             break;
@@ -143,7 +175,7 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lbRestaurant = new javax.swing.JLabel();
         cbRestaurants = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtComentario = new javax.swing.JTextArea();
@@ -152,9 +184,9 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Escribe tu comentario");
+        jLabel1.setText("Comentario");
 
-        jLabel2.setText("Selecciona el restaurante");
+        lbRestaurant.setText("Selecciona el restaurante");
 
         txtComentario.setColumns(20);
         txtComentario.setRows(5);
@@ -188,7 +220,7 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(8, 8, 8)
-                                .addComponent(jLabel2))
+                                .addComponent(lbRestaurant))
                             .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -207,7 +239,7 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2)
+                .addComponent(lbRestaurant)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(92, 92, 92)
@@ -236,8 +268,8 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
     private javax.swing.JButton btnOk;
     private javax.swing.JComboBox<ItemsCombo> cbRestaurants;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbRestaurant;
     private javax.swing.JTextArea txtComentario;
     // End of variables declaration//GEN-END:variables
 }
