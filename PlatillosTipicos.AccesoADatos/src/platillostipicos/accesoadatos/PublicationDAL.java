@@ -158,6 +158,28 @@ public class PublicationDAL {
     }
     // </editor-fold> 
 
+    // <editor-fold defaultstate="collapsed" desc="DELETE">
+    public static int eliminar(Publication pPublication) throws Exception {
+        int result;
+        String sql;
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            sql = "DELETE FROM Publications WHERE Id=?";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublication.getId().toString());
+                result = ps.executeUpdate();
+                ps.close(); // cerrar el PreparedStatement
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close(); // cerrar la conexion a la base de datos
+        }
+        catch (SQLException ex) {
+            throw ex;
+        }
+        return result;
+    }
+    // </editor-fold> 
+
        
     // <editor-fold defaultstate="collapsed" desc="GETBYID">
     public static Publication GetById(Publication pPublication) throws Exception {
