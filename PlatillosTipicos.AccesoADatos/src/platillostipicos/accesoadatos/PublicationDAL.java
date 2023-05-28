@@ -46,8 +46,63 @@ public class PublicationDAL {
     // </editor-fold> 
 
     // <editor-fold defaultstate="collapsed" desc="READ">
+    // <editor-fold defaultstate="collapsed" desc="GETBYID">
+    public static Publication GetById(Publication pPublication) throws Exception {
+        Publication publication = new Publication();
+        ArrayList<Publication> publications = new ArrayList();
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            String sql = obtenerSelect(pPublication);
+            sql += " WHERE u.Id=?";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublication.getId().toString());
+                obtenerDatos(ps, publications);
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        if (publications.size() > 0) {
+            publication = publications.get(0);
+        }
+        if (publication.getPublicationImagesId() != null) {
+            PublicationImages pImgs = new PublicationImages();
+            pImgs.setId(publication.getPublicationImagesId());
+            publication.setPublicationImages(PublicationImagesDAL.GetByIdImgs(pImgs));
+        }
+        return publication;
+    }
+    // </editor-fold> 
+
     static String obtenerCampos() {
         return "u.Id, u.Description, u.PublicationDate, u.UserId, u.PublicationImagesId, u.RestaurantId";
+    }
+
+    private static void obtenerDatos(PreparedStatement pPS, ArrayList<Publication> pPublications) throws Exception {
+        try (ResultSet resultSet = ComunDB.obtenerResultSet(pPS);) { // obtener el ResultSet desde la clase ComunDB
+            while (resultSet.next()) { // Recorrer cada una de la fila que regresa la consulta  SELECT de la tabla Publications
+                Publication publication = new Publication();
+                // Llenar las propiedaddes de la Entidad Usuario con los datos obtenidos de la fila en el ResultSet
+                asignarDatosResultSet(publication, resultSet, 0);
+                pPublications.add(publication);
+            }
+            resultSet.close(); // cerrar el ResultSet
+        } catch (SQLException ex) {
+            throw ex;// enviar al siguiente metodo el error al obtener ResultSet de la clase ComunDB   en el caso que suceda 
+        }
+    }
+
+    private static String obtenerSelect(Publication pPublication) {
+        String sql;
+        sql = "SELECT ";
+        if (pPublication.getTop_aux() > 0 && ComunDB.TIPODB == ComunDB.TipoDB.SQLSERVER) {
+            // Agregar el TOP a la consulta SELECT si el gestor de base de datos es SQL SERVER y getTop_aux es mayor a cero
+            sql += "TOP " + pPublication.getTop_aux() + " ";
+        }
+        sql += (obtenerCampos() + " FROM Publications u");
+        return sql;
     }
 
     private static String agregarOrderBy(Publication pPublication) {
@@ -232,63 +287,6 @@ public class PublicationDAL {
             throw ex;
         }
         return result;
-    }
-    // </editor-fold> 
-
-    // <editor-fold defaultstate="collapsed" desc="GETBYID">
-    public static Publication GetById(Publication pPublication) throws Exception {
-        Publication publication = new Publication();
-        ArrayList<Publication> publications = new ArrayList();
-        try (Connection conn = ComunDB.obtenerConexion();) {
-            String sql = obtenerSelect(pPublication);
-            sql += " WHERE u.Id=?";
-            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
-                ps.setString(1, pPublication.getId().toString());
-                obtenerDatos(ps, publications);
-                ps.close();
-            } catch (SQLException ex) {
-                throw ex;
-            }
-            conn.close();
-        } catch (SQLException ex) {
-            throw ex;
-        }
-        if (publications.size() > 0) {
-            publication = publications.get(0);
-        }
-        if (publication.getPublicationImagesId() != null) {
-            PublicationImages pImgs = new PublicationImages();
-            pImgs.setId(publication.getPublicationImagesId());
-            publication.setPublicationImages(PublicationImagesDAL.GetByIdImgs(pImgs));
-        }
-        return publication;
-    }
-    // </editor-fold> 
-
-    // <editor-fold defaultstate="collapsed" desc="a">
-    private static void obtenerDatos(PreparedStatement pPS, ArrayList<Publication> pPublications) throws Exception {
-        try (ResultSet resultSet = ComunDB.obtenerResultSet(pPS);) { // obtener el ResultSet desde la clase ComunDB
-            while (resultSet.next()) { // Recorrer cada una de la fila que regresa la consulta  SELECT de la tabla Publications
-                Publication publication = new Publication();
-                // Llenar las propiedaddes de la Entidad Usuario con los datos obtenidos de la fila en el ResultSet
-                asignarDatosResultSet(publication, resultSet, 0);
-                pPublications.add(publication);
-            }
-            resultSet.close(); // cerrar el ResultSet
-        } catch (SQLException ex) {
-            throw ex;// enviar al siguiente metodo el error al obtener ResultSet de la clase ComunDB   en el caso que suceda 
-        }
-    }
-
-    private static String obtenerSelect(Publication pPublication) {
-        String sql;
-        sql = "SELECT ";
-        if (pPublication.getTop_aux() > 0 && ComunDB.TIPODB == ComunDB.TipoDB.SQLSERVER) {
-            // Agregar el TOP a la consulta SELECT si el gestor de base de datos es SQL SERVER y getTop_aux es mayor a cero
-            sql += "TOP " + pPublication.getTop_aux() + " ";
-        }
-        sql += (obtenerCampos() + " FROM Publications u");
-        return sql;
     }
     // </editor-fold> 
 
