@@ -7,7 +7,6 @@ public class Publication {
 
     private int top_aux;
     private UUID id;
-    private boolean repost;
     private String description;
     private LocalDateTime publicationDate;
     private UUID userId;
@@ -20,9 +19,8 @@ public class Publication {
     public Publication() {
     }
 
-    public Publication(UUID id, boolean repost, String description, LocalDateTime publicationDate, UUID userId, UUID publicationImagesId, UUID restaurantId) {
+    public Publication(UUID id, String description, LocalDateTime publicationDate, UUID userId, UUID publicationImagesId, UUID restaurantId) {
         this.id = id;
-        this.repost = repost;
         this.description = description;
         this.publicationDate = publicationDate;
         this.userId = userId;
@@ -45,15 +43,6 @@ public class Publication {
     public void setId(UUID id) {
         this.id = id;
     }
-
-    public boolean isRepost() {
-        return repost;
-    }
-
-    public void setRepost(boolean repost) {
-        this.repost = repost;
-    }
-
     public String getDescription() {
         return description;
     }
