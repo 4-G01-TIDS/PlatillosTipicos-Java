@@ -193,6 +193,7 @@ public class PublicationDAL {
         try (Connection conn = ComunDB.obtenerConexion();) {
             sql = "UPDATE Publications SET Description=? WHERE Id=?";
             try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                PublicationImagesDAL.modificarImgP(pPublication.getPublicationImages());
                 ps.setString(1, pPublication.getDescription());
                 ps.setString(2, pPublication.getId().toString());
                 result = ps.executeUpdate();
