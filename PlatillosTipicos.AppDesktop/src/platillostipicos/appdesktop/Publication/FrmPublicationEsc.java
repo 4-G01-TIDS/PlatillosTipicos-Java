@@ -131,7 +131,6 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
         ItemsCombo itemPublication = (ItemsCombo) cbRestaurants.getSelectedItem();
         this.publicationActual.setUserId(idUser);
         this.publicationActual.setRestaurantId(UUID.fromString(itemPublication.getValue()));
-
         PublicationImages images = new PublicationImages();
 
 // Obtener los datos de imagen para lblSelectedImage1
@@ -155,8 +154,13 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
         images.setImagePublication5(imageData5);
 
         if (imageData1 != null || imageData2 != null || imageData3 != null || imageData4 != null || imageData5 != null) {
-            UUID idImagesPublication = UUID.randomUUID();
-            images.setId(idImagesPublication);
+            if (publicationActual.getPublicationImagesId() == null) {
+                UUID idImagesPublication = UUID.randomUUID();
+                images.setId(idImagesPublication);
+            }else{
+                images.setId(publicationActual.getPublicationImagesId());
+            }
+
         }
         this.publicationActual.setPublicationImagesId(images.getId());
 
