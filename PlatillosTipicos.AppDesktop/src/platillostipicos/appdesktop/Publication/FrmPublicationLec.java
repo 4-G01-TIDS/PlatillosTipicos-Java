@@ -12,7 +12,6 @@ import platillostipicos.accesoadatos.PublicationDAL;
 import platillostipicos.appdesktop.FrmInicio;
 import platillostipicos.appdesktop.utils.*;
 import platillostipicos.entidadesdenegocio.Publication;
-import platillostipicos.entidadesdenegocio.PublicationImages;
 
 public final class FrmPublicationLec extends javax.swing.JFrame {
 
@@ -45,12 +44,13 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.tbPublication.getTableHeader().getColumnModel().getColumn(pColumna).setMinWidth(0);
     }
 
-    private void limpiarControles() {
+    public void limpiarControles() {
         this.cbRestaurants.setSelectedItem(new ItemsCombo(0, null, null));
         this.cbUsers.setSelectedItem(new ItemsCombo(0, null, null));
+        buscar();
     }
 
-    public void buscar() {
+    private void buscar() {
         try {
             Publication publicationSearch = new Publication();
             ItemsCombo itemsCbPublications = (ItemsCombo) cbRestaurants.getSelectedItem();
@@ -101,11 +101,11 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             model.setValueAt(publication.getPublicationImagesId(), i, ColumnaTabla.PUBLICATIONIMAGESID);
             model.setValueAt(publication.getRestaurantId(), i, ColumnaTabla.RESTAURANTID);
             byte[] imageBytes1 = publication.getPublicationImages().getImagePublication1();
+
             byte[] imageBytes2 = publication.getPublicationImages().getImagePublication2();
             byte[] imageBytes3 = publication.getPublicationImages().getImagePublication3();
             byte[] imageBytes4 = publication.getPublicationImages().getImagePublication4();
             byte[] imageBytes5 = publication.getPublicationImages().getImagePublication5();
-
             configurarColumnaImagen(ColumnaTabla.IMAGE1, imageBytes1, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE2, imageBytes2, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
@@ -145,7 +145,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             int tableWidth = 200; // Obtener el ancho actual de la tabla
             //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
 
-            ImageRenderer imageRenderer = new ImageRenderer(cellHeight, tableWidth);
+            ImageUtils imageRenderer = new ImageUtils(cellHeight, tableWidth);
 
             tbPublication.getColumnModel().getColumn(columna).setCellRenderer(imageRenderer);
             model.setValueAt(imageBytes, row, columna);

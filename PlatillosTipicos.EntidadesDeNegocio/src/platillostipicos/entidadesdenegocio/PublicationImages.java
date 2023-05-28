@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package platillostipicos.entidadesdenegocio;
 
 import java.util.UUID;
 
-/**
- *
- * @author edefl
- */
 public class PublicationImages {
 
     private int top_aux;
@@ -22,8 +14,7 @@ public class PublicationImages {
 
     public PublicationImages() {
     }
-    
-    
+
     public PublicationImages(UUID Id, byte[] ImagePublication1, byte[] ImagePublication2, byte[] ImagePublication3, byte[] ImagePublication4, byte[] ImagePublication5) {
         this.Id = Id;
         this.ImagePublication1 = ImagePublication1;
@@ -88,7 +79,5 @@ public class PublicationImages {
     public void setImagePublication5(byte[] ImagePublication5) {
         this.ImagePublication5 = ImagePublication5;
     }
-    
-    
-    
+
 }
