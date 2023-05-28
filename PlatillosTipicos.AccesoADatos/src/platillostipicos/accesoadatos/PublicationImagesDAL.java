@@ -1,6 +1,9 @@
 package platillostipicos.accesoadatos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 import platillostipicos.entidadesdenegocio.PublicationImages;
 
@@ -37,5 +40,33 @@ public class PublicationImagesDAL {
 
         return pIndex;
     }
+
+    // <editor-fold defaultstate="collapsed" desc="CREATE">
+    public static int crearImagenes(PublicationImages pPublicationImages) throws Exception {
+
+        int result;
+        String sql;
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            sql = "INSERT INTO PublicationImages(Id, ImagePublication1,ImagePublication2,ImagePublication3,ImagePublication4,ImagePublication5) VALUES(?,?,?,?,?,?)";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublicationImages.getId().toString());
+                ps.setBytes(2, pPublicationImages.getImagePublication1());
+                ps.setBytes(3, pPublicationImages.getImagePublication2());
+                ps.setBytes(4, pPublicationImages.getImagePublication3());
+                ps.setBytes(5, pPublicationImages.getImagePublication4());
+                ps.setBytes(6, pPublicationImages.getImagePublication5());
+
+                result = ps.executeUpdate();
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        return result;
+    }
+    // </editor-fold> 
 
 }

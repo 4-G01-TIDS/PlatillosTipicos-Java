@@ -13,6 +13,10 @@ public class PublicationDAL {
 
     // <editor-fold defaultstate="collapsed" desc="CREATE">
     public static int crear(Publication pPublication) throws Exception {
+        if (pPublication.getPublicationImagesId() != null) {
+            PublicationImagesDAL.crearImagenes(pPublication.getPublicationImages());
+
+        }
         int result;
         String sql;
         try (Connection conn = ComunDB.obtenerConexion();) {
@@ -25,8 +29,7 @@ public class PublicationDAL {
                 ps.setTimestamp(2, timestamp);
                 //
                 ps.setString(3, pPublication.getUserId().toString());
-                UUID publicationImagesId = pPublication.getPublicationImagesId();
-                ps.setString(4, publicationImagesId != null ? publicationImagesId.toString() : null);
+                ps.setString(4, pPublication.getPublicationImagesId() != null ? pPublication.getPublicationImagesId().toString() : null);
                 ps.setString(5, pPublication.getRestaurantId().toString());
                 result = ps.executeUpdate();
                 ps.close();
@@ -134,56 +137,53 @@ public class PublicationDAL {
         return publications;
     }
 
-    
     static void querySelect(Publication pPublication, ComunDB.UtilQuery pUtilQuery) throws SQLException {
-    PreparedStatement statement = pUtilQuery.getStatement(); // obtener el PreparedStatement al cual aplicar los parametros
+        PreparedStatement statement = pUtilQuery.getStatement(); // obtener el PreparedStatement al cual aplicar los parametros
 
-    if (pPublication.getId() != null) {
-        pUtilQuery.AgregarWhereAnd(" id = ? ");
-        if (statement != null) {
-            statement.setObject(pUtilQuery.getNumWhere(), pPublication.getId());
+        if (pPublication.getId() != null) {
+            pUtilQuery.AgregarWhereAnd(" id = ? ");
+            if (statement != null) {
+                statement.setObject(pUtilQuery.getNumWhere(), pPublication.getId());
+            }
         }
+
+        if (pPublication.getDescription() != null && !pPublication.getDescription().trim().isEmpty()) {
+            pUtilQuery.AgregarWhereAnd(" description LIKE ? ");
+            if (statement != null) {
+                statement.setString(pUtilQuery.getNumWhere(), "%" + pPublication.getDescription() + "%");
+            }
+        }
+
+        if (pPublication.getPublicationDate() != null) {
+            pUtilQuery.AgregarWhereAnd(" publicationDate = ? ");
+            if (statement != null) {
+                statement.setObject(pUtilQuery.getNumWhere(), pPublication.getPublicationDate());
+            }
+        }
+
+        if (pPublication.getUserId() != null) {
+            pUtilQuery.AgregarWhereAnd(" userId = ? ");
+            if (statement != null) {
+                statement.setObject(pUtilQuery.getNumWhere(), pPublication.getUserId());
+            }
+        }
+
+        if (pPublication.getPublicationImagesId() != null) {
+            pUtilQuery.AgregarWhereAnd(" publicationImagesId = ? ");
+            if (statement != null) {
+                statement.setObject(pUtilQuery.getNumWhere(), pPublication.getPublicationImagesId());
+            }
+        }
+
+        if (pPublication.getRestaurantId() != null) {
+            pUtilQuery.AgregarWhereAnd(" restaurantId = ? ");
+            if (statement != null) {
+                statement.setObject(pUtilQuery.getNumWhere(), pPublication.getRestaurantId());
+            }
+        }
+
     }
 
-
-    if (pPublication.getDescription() != null && !pPublication.getDescription().trim().isEmpty()) {
-        pUtilQuery.AgregarWhereAnd(" description LIKE ? ");
-        if (statement != null) {
-            statement.setString(pUtilQuery.getNumWhere(), "%" + pPublication.getDescription() + "%");
-        }
-    }
-
-    if (pPublication.getPublicationDate() != null) {
-        pUtilQuery.AgregarWhereAnd(" publicationDate = ? ");
-        if (statement != null) {
-            statement.setObject(pUtilQuery.getNumWhere(), pPublication.getPublicationDate());
-        }
-    }
-
-    if (pPublication.getUserId() != null) {
-        pUtilQuery.AgregarWhereAnd(" userId = ? ");
-        if (statement != null) {
-            statement.setObject(pUtilQuery.getNumWhere(), pPublication.getUserId());
-        }
-    }
-
-    if (pPublication.getPublicationImagesId() != null) {
-        pUtilQuery.AgregarWhereAnd(" publicationImagesId = ? ");
-        if (statement != null) {
-            statement.setObject(pUtilQuery.getNumWhere(), pPublication.getPublicationImagesId());
-        }
-    }
-
-    if (pPublication.getRestaurantId() != null) {
-        pUtilQuery.AgregarWhereAnd(" restaurantId = ? ");
-        if (statement != null) {
-            statement.setObject(pUtilQuery.getNumWhere(), pPublication.getRestaurantId());
-        }
-    }
-
-}
-
-    
     // </editor-fold> 
     // <editor-fold defaultstate="collapsed" desc="UPDATE">
     public static int modificar(Publication pPublication) throws Exception {
@@ -217,21 +217,22 @@ public class PublicationDAL {
             sql = "DELETE FROM Publications WHERE Id=?";
             try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
                 ps.setString(1, pPublication.getId().toString());
+                if (pPublication.getPublicationImagesId() != null) {
+                    PublicationImagesDAL.eliminarImagenes(pPublication.getPublicationImages());
+                }
                 result = ps.executeUpdate();
                 ps.close(); // cerrar el PreparedStatement
             } catch (SQLException ex) {
                 throw ex;
             }
             conn.close(); // cerrar la conexion a la base de datos
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             throw ex;
         }
         return result;
     }
     // </editor-fold> 
 
-       
     // <editor-fold defaultstate="collapsed" desc="GETBYID">
     public static Publication GetById(Publication pPublication) throws Exception {
         Publication publication = new Publication();
