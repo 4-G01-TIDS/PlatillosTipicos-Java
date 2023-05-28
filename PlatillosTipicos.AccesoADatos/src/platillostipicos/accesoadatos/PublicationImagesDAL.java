@@ -41,6 +41,27 @@ public class PublicationImagesDAL {
         return pIndex;
     }
 
+    // <editor-fold defaultstate="collapsed" desc="DELETE">
+    public static int eliminarImagenes(PublicationImages pPublicationImages) throws Exception {
+        int result;
+        String sql;
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            sql = "DELETE FROM PublicationImages WHERE Id=?";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublicationImages.getId().toString());
+                result = ps.executeUpdate();
+                ps.close(); // cerrar el PreparedStatement
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close(); // cerrar la conexion a la base de datos
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        return result;
+    }
+    // </editor-fold> 
+
     // <editor-fold defaultstate="collapsed" desc="CREATE">
     public static int crearImagenes(PublicationImages pPublicationImages) throws Exception {
 
