@@ -38,6 +38,9 @@ INSERT INTO Users (Id,Name, Email,EmailConfirmed, Password) VALUES
 ('23366d79-f322-4448-9e55-1518fc0c34b0','Admin','admin@gmail.com',1,'c07147eccb32ce3001ec189330557c98')--password: Qwerty.123!
 
 
+INSERT INTO Users (Id,Name, Email,EmailConfirmed, Password) VALUES
+('cdab3e61-1160-403d-bd1e-ccca91b7c6aa','Prueba2','Prueba2@gmail.com',1,'c07147eccb32ce3001ec189330557c98')
+
 
 --Crear la tabla de roles
 CREATE TABLE [dbo].[Roles] (
@@ -473,4 +476,9 @@ VALUES
 
 INSERT INTO Restaurants(Id, Name, Latitude, Longitude, RestaurantImagesId, UserId, MunicipalityId) VALUES
 ('807487cc-fc4d-11ed-be56-0242ac120002', 'RestaurantInicial', 13.732685, -89.373997, '0a37f2b0-ee1f-11ed-a05b-0242ac120003', '23366d79-f322-4448-9e55-1518fc0c34b0', 75
+);
+
+
+INSERT INTO Restaurants(Id, Name, Latitude, Longitude, RestaurantImagesId, UserId, MunicipalityId) VALUES
+('c71c0a02-8f35-4b50-9fad-01b7d662ad0d', 'RestaurantSecundario', 13.732685, -89.373997, '0a37f2b0-ee1f-11ed-a05b-0242ac120003', 'cdab3e61-1160-403d-bd1e-ccca91b7c6aa', 1
 );
