@@ -9,7 +9,7 @@ import platillostipicos.accesoadatos.PublicationDAL;
 
 public class FrmPublicationEsc extends javax.swing.JFrame {
 
-    private UUID idUser = UUID.fromString("23366d79-f322-4448-9e55-1518fc0c34b0");
+    private UUID idUser = UUID.fromString("cdab3e61-1160-403d-bd1e-ccca91b7c6aa");
     private FrmPublicationLec frmPadre;
     private int opcionForm;
     private Publication publicationActual;
@@ -241,7 +241,7 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                                 .addComponent(lbRestaurant))
                             .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(565, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addComponent(btnOk)

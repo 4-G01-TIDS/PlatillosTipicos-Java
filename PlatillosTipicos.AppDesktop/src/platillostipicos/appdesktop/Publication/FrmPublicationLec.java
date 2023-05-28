@@ -45,16 +45,22 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.tbPublication.getTableHeader().getColumnModel().getColumn(pColumna).setMinWidth(0);
     }
 
+    private void limpiarControles() {
+        this.cbRestaurants.setSelectedItem(new ItemsCombo(0, null, null));
+        this.cbUsers.setSelectedItem(new ItemsCombo(0, null, null));
+    }
+
     public void buscar() {
         try {
             Publication publicationSearch = new Publication();
             ItemsCombo itemsCbPublications = (ItemsCombo) cbRestaurants.getSelectedItem();
-            if (itemsCbPublications.getValue().trim().isEmpty()) {
-                publicationSearch.setRestaurantId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-            } else {
-                publicationSearch.setRestaurantId(UUID.fromString(itemsCbPublications.getValue()));
+            boolean cbRestaurant = itemsCbPublications.getValue().trim().isEmpty();
+            publicationSearch.setRestaurantId(!cbRestaurant ? UUID.fromString(itemsCbPublications.getValue()) : null);
+            //////////////////////////////////////////////////
+            ItemsCombo itemsCbUsuarios = (ItemsCombo) cbUsers.getSelectedItem();
+            boolean cbUsuarios = itemsCbUsuarios.getValue().trim().isEmpty();
+            publicationSearch.setUserId(!cbUsuarios ? UUID.fromString(itemsCbUsuarios.getValue()) : null);
 
-            }
             ArrayList<Publication> publications = PublicationDAL.getPublications(publicationSearch);
             iniciarDatosDeLaTabla(publications);
         } catch (Exception ex) {
@@ -173,12 +179,22 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
     public void iniciarComboRestaurant(javax.swing.JComboBox<ItemsCombo> pJComboBox, javax.swing.JFrame pFrame) {
         pJComboBox.addItem(new ItemsCombo(0, "SELECCIONAR", ""));
         pJComboBox.addItem(new ItemsCombo(1, "Restaurante", "807487cc-fc4d-11ed-be56-0242ac120002"));
+        pJComboBox.addItem(new ItemsCombo(2, "Restaurante2", "c71c0a02-8f35-4b50-9fad-01b7d662ad0d"));
+
+    }
+
+    public void iniciarComboUsuarios(javax.swing.JComboBox<ItemsCombo> pJComboBox, javax.swing.JFrame pFrame) {
+        pJComboBox.addItem(new ItemsCombo(0, "SELECCIONAR", ""));
+        pJComboBox.addItem(new ItemsCombo(1, "Usuario", "23366d79-f322-4448-9e55-1518fc0c34b0"));
+        pJComboBox.addItem(new ItemsCombo(2, "Usuario2", "cdab3e61-1160-403d-bd1e-ccca91b7c6aa"));
+
     }
 
     private void iniciarDatos(javax.swing.JFrame pFrmPadre) {
         frmPadre = pFrmPadre;
         pFrmPadre.setEnabled(true); // deshabilitar el formulario FrmInicio
         iniciarComboRestaurant(this.cbRestaurants, this.frmPadre);
+        iniciarComboUsuarios(this.cbUsers, this.frmPadre);
         buscar();
     }
 
@@ -217,6 +233,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         btnModificar1 = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnVer = new javax.swing.JButton();
+        cbUsers = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        btnLimpiar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         meInicio = new javax.swing.JMenu();
 
@@ -288,6 +307,16 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Usuario");
+
+        btnLimpiar.setMnemonic('L');
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
+
         meInicio.setText("INICIO");
         meInicio.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         meInicio.addMenuListener(new javax.swing.event.MenuListener() {
@@ -321,23 +350,38 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         .addComponent(btnVer))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
-                        .addComponent(btnBuscar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(191, 191, 191)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbUsers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(19, 19, 19)
+                                        .addComponent(jLabel1)))
+                                .addGap(79, 79, 79)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnBuscar)
+                                .addGap(58, 58, 58)
+                                .addComponent(btnLimpiar)))))
                 .addContainerGap(454, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbRestaurants, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbUsers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
-                .addComponent(btnBuscar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnLimpiar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewPublication)
@@ -388,15 +432,23 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.abrirFormularioDeEscritura(FormEscOpcion.VER);
     }//GEN-LAST:event_btnVerActionPerformed
 
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        this.limpiarControles();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnModificar1;
     private javax.swing.JButton btnNewPublication;
     private javax.swing.JButton btnVer;
     private javax.swing.JComboBox<ItemsCombo> cbRestaurants;
+    private javax.swing.JComboBox<ItemsCombo> cbUsers;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
