@@ -100,6 +100,12 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 this.setTitle("Eliminar el Publicacion");
                 this.txtComentario.setEditable(false);
                 this.cbRestaurants.setEnabled(false);
+                this.btnInputImg1.setVisible(false);
+                this.btnInputImg2.setVisible(false);
+                this.btnInputImg3.setVisible(false);
+                this.btnInputImg4.setVisible(false);
+                this.btnInputImg5.setVisible(false);
+
                 llenarControles(pPublication);
                 break;
             case FormEscOpcion.VER:
@@ -108,6 +114,11 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 this.setTitle("Ver el Publicacion"); // modificar el titulo de la pantalla de FrmRolEsc
                 this.txtComentario.setEditable(false);
                 this.cbRestaurants.setEnabled(false);
+                this.btnInputImg1.setVisible(false);
+                this.btnInputImg2.setVisible(false);
+                this.btnInputImg3.setVisible(false);
+                this.btnInputImg4.setVisible(false);
+                this.btnInputImg5.setVisible(false);
                 llenarControles(pPublication);// llamar el metodo llenarControles para llenar los controles del formulario con los datos de la clase usuario
                 break;
             default:
@@ -157,7 +168,7 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
             if (publicationActual.getPublicationImagesId() == null) {
                 UUID idImagesPublication = UUID.randomUUID();
                 images.setId(idImagesPublication);
-            }else{
+            } else {
                 images.setId(publicationActual.getPublicationImagesId());
             }
 
