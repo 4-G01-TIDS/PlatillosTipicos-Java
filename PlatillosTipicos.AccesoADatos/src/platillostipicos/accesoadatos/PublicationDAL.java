@@ -17,6 +17,7 @@ public class PublicationDAL {
             PublicationImagesDAL.crearImagenes(pPublication.getPublicationImages());
 
         }
+
         int result;
         String sql;
         try (Connection conn = ComunDB.obtenerConexion();) {
@@ -253,6 +254,11 @@ public class PublicationDAL {
         }
         if (publications.size() > 0) {
             publication = publications.get(0);
+        }
+        if (publication.getPublicationImagesId() != null) {
+            PublicationImages pImgs = new PublicationImages();
+            pImgs.setId(publication.getPublicationImagesId());
+            publication.setPublicationImages(PublicationImagesDAL.GetByIdImgs(pImgs));
         }
         return publication;
     }

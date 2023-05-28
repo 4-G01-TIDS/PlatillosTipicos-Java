@@ -35,6 +35,39 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
                 }
             }
 
+            PublicationImages images = publicationActual.getPublicationImages();
+            JLabel[] lblSelectedImages = {lblSelectedImage1, lblSelectedImage2, lblSelectedImage3, lblSelectedImage4, lblSelectedImage5};
+
+            for (int i = 0; i < lblSelectedImages.length; i++) {
+                byte[] imageData = null;
+                ImageIcon icon = null;
+
+                switch (i) {
+                    case 0:
+                        imageData = images.getImagePublication1();
+                        break;
+                    case 1:
+                        imageData = images.getImagePublication2();
+                        break;
+                    case 2:
+                        imageData = images.getImagePublication3();
+                        break;
+                    case 3:
+                        imageData = images.getImagePublication4();
+                        break;
+                    case 4:
+                        imageData = images.getImagePublication5();
+                        break;
+                    default:
+                        break;
+                }
+
+                if (imageData != null) {
+                    icon = new ImageIcon(imageData);
+                    lblSelectedImages[i].setIcon(icon);
+                }
+            }
+
         } catch (Exception ex) {
             // Enviar el mensaje al usuario de la pantalla en el caso que suceda un error al obtener los datos de la base de datos
             JOptionPane.showMessageDialog(frmPadre, "Sucedio el siguiente error: " + ex.getMessage());

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 import platillostipicos.entidadesdenegocio.PublicationImages;
 
@@ -13,6 +14,30 @@ public class PublicationImagesDAL {
         return "r.Id, r.ImagePublication1, r.ImagePublication2, r.ImagePublication3, r.ImagePublication4, r.ImagePublication5";
     }
 
+    private static void obtenerDatos(PreparedStatement pPS, ArrayList<PublicationImages> pPublicationImages) throws Exception {
+        try (ResultSet resultSet = ComunDB.obtenerResultSet(pPS);) {
+            while (resultSet.next()) {
+                PublicationImages publicationImg = new PublicationImages();
+                asignarDatosResultSet(publicationImg, resultSet, 0);
+                pPublicationImages.add(publicationImg);
+            }
+            resultSet.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
+    
+    private static String obtenerSelect(PublicationImages pPublicationImages) {
+        String sql;
+        sql = "SELECT ";
+        if (pPublicationImages.getTop_aux() > 0 && ComunDB.TIPODB == ComunDB.TipoDB.SQLSERVER) {
+            // Agregar el TOP a la consulta SELECT si el gestor de base de datos es SQL SERVER y getTop_aux es mayor a cero
+            sql += "TOP " + pPublicationImages.getTop_aux() + " ";
+        }
+        sql += (obtenerCampos() + " FROM PublicationImages r");
+        return sql;
+    }
+    
     static int asignarDatosResultSet(PublicationImages pPublicationImages, ResultSet pResultSet, int pIndex) throws Exception {
         pIndex++;
         String idStr = pResultSet.getString(pIndex);
@@ -89,5 +114,31 @@ public class PublicationImagesDAL {
         return result;
     }
     // </editor-fold> 
-
+    
+    
+     // <editor-fold defaultstate="collapsed" desc="GETBYID">
+    public static PublicationImages GetByIdImgs(PublicationImages pPublicationImages) throws Exception {
+        PublicationImages publication = new PublicationImages();
+        ArrayList<PublicationImages> publications = new ArrayList<>();
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            String sql = obtenerSelect(pPublicationImages);
+            sql += " WHERE r.Id=?";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublicationImages.getId().toString());
+                obtenerDatos(ps, publications);
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        if (publications.size() > 0) {
+            publication = publications.get(0);
+        }
+        return publication;
+    }
+    // </editor-fold> 
+    
 }
