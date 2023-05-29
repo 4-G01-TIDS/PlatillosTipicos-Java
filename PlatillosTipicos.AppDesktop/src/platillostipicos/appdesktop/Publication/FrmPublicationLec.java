@@ -8,10 +8,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import platillostipicos.accesoadatos.CommentDAL;
 import platillostipicos.accesoadatos.PublicationDAL;
 import platillostipicos.appdesktop.FrmInicio;
 import platillostipicos.appdesktop.utils.*;
-import platillostipicos.entidadesdenegocio.Publication;
+import platillostipicos.entidadesdenegocio.*;
 
 public final class FrmPublicationLec extends javax.swing.JFrame {
 
@@ -32,6 +33,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         static final int IMAGE3 = 8;
         static final int IMAGE4 = 9;
         static final int IMAGE5 = 10;
+        static final int COMMENT = 11;
 
     }
 
@@ -62,13 +64,14 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             publicationSearch.setUserId(!cbUsuarios ? UUID.fromString(itemsCbUsuarios.getValue()) : null);
 
             ArrayList<Publication> publications = PublicationDAL.getPublications(publicationSearch);
+
             iniciarDatosDeLaTabla(publications);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Sucedio el siguiente error: " + ex.getMessage());
         }
     }
 
-    public void iniciarDatosDeLaTabla(ArrayList<Publication> pPublications) {
+    public void iniciarDatosDeLaTabla(ArrayList<Publication> pPublications) throws Exception {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -87,10 +90,12 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         model.addColumn("Imagen3");
         model.addColumn("Imagen4");
         model.addColumn("Imagen5");
+        model.addColumn("Comentarios");
 
         this.tbPublication.setModel(model);
         Object row[] = null;
 
+        ArrayList<String> comentarios = new ArrayList<>();
         for (int i = 0; i < pPublications.size(); i++) {
             Publication publication = pPublications.get(i);
             model.addRow(row);
@@ -111,6 +116,19 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE4, imageBytes4, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE5, imageBytes5, i, model);
+
+            ArrayList<Comment> comments = CommentDAL.getByPublicationId(publication.getId().toString());
+            StringBuilder comentariosBuilder = new StringBuilder();
+            for (Comment comment : comments) {
+                comentariosBuilder.append(comment.getContent()).append("\n");
+            }
+            String comentariosTexto = comentariosBuilder.toString();
+            if (comments.isEmpty()) {
+                model.setValueAt("", i, ColumnaTabla.COMMENT); // Sin comentarios
+            } else {
+                comentarios.add(comentariosTexto); // Agregar comentarios a la lista
+                model.setValueAt("VerComentarios", i, ColumnaTabla.COMMENT); // Mostrar "VerComentarios"
+            }
         }
 
         tbPublication.addMouseListener(new MouseAdapter() {
@@ -129,7 +147,22 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         JLabel imageLabel = new JLabel(imageIcon);
                         JOptionPane.showMessageDialog(null, imageLabel, "Imagen", JOptionPane.PLAIN_MESSAGE);
                     }
+                } else if (column == ColumnaTabla.COMMENT) {
+                    try {
+                        int row = tbPublication.rowAtPoint(e.getPoint());
+                        Publication selectedPublication = pPublications.get(row); // Obtener la publicación seleccionada
+                        ArrayList<Comment> comments = CommentDAL.getByPublicationId(selectedPublication.getId().toString());
+                        StringBuilder comentariosBuilder = new StringBuilder();
+                        for (Comment comment : comments) {
+                            comentariosBuilder.append(comment.getContent()).append("\n");
+                        }
+                        String comentariosTexto = comentariosBuilder.toString();
+                        JOptionPane.showMessageDialog(null, comentariosTexto, "Comentarios", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Error al obtener los comentarios: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
+
             }
         });
 
@@ -141,8 +174,8 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
     private void configurarColumnaImagen(int columna, byte[] imageBytes, int row, DefaultTableModel model) {
         if (imageBytes != null) {
-            int cellHeight = 200; // Ajusta la altura según tus necesidades
-            int tableWidth = 200; // Obtener el ancho actual de la tabla
+            int cellHeight = 50; // Ajusta la altura según tus necesidades
+            int tableWidth = 50; // Obtener el ancho actual de la tabla
             //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
 
             ImageUtils imageRenderer = new ImageUtils(cellHeight, tableWidth);
