@@ -9,7 +9,6 @@ public class Comment {
     private UUID Id;
     private String Content;
     private LocalDateTime CreateDate;
-    private int Reports;
     private UUID UserId;
     private UUID PublicationId;
     private User User;
@@ -18,11 +17,10 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(UUID Id, String Content, LocalDateTime CreateDate, int Reports, UUID UserId, UUID PublicationId) {
+    public Comment(UUID Id, String Content, LocalDateTime CreateDate, UUID UserId, UUID PublicationId) {
         this.Id = Id;
         this.Content = Content;
         this.CreateDate = CreateDate;
-        this.Reports = Reports;
         this.UserId = UserId;
         this.PublicationId = PublicationId;
     }
@@ -57,14 +55,6 @@ public class Comment {
 
     public void setCreateDate(LocalDateTime CreateDate) {
         this.CreateDate = CreateDate;
-    }
-
-    public int getReports() {
-        return Reports;
-    }
-
-    public void setReports(int Reports) {
-        this.Reports = Reports;
     }
 
     public UUID getUserId() {
