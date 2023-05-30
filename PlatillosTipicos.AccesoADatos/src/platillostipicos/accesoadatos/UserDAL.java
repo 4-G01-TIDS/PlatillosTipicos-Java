@@ -133,7 +133,7 @@ public class UserDAL {
                  // agregar el parametro del campo Apellido a la consulta SELECT de la tabla de Usuario
                 statement.setString(pUtilQuery.getNumWhere(), "%" + pUsuario.getLastName() + "%");
             }
-        }
+        }//
         // Verificar si se va incluir el campo Login en el filtro de la consulta SELECT de la tabla de Usuario
         if (pUsuario.getEmail() != null && pUsuario.getEmail().trim().isEmpty() == false) {
             pUtilQuery.AgregarWhereAnd(" u.Email=? "); // agregar el campo Login al filtro de la consulta SELECT y agregar en el WHERE o AND
