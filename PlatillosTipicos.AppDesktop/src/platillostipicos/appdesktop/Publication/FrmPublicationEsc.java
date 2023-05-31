@@ -15,8 +15,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class FrmPublicationEsc extends javax.swing.JFrame {
 
 //    private Image selectedImage1;
-    private UUID idUser = UUID.fromString("cdab3e61-1160-403d-bd1e-ccca91b7c6aa");
     private FrmPublicationLec frmPadre;
+    private UUID idUser = UUID.fromString("cdab3e61-1160-403d-bd1e-ccca91b7c6aa");
     private int opcionForm;
     private Publication publicationActual;
 
@@ -70,7 +70,7 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
 
         } catch (Exception ex) {
             // Enviar el mensaje al usuario de la pantalla en el caso que suceda un error al obtener los datos de la base de datos
-            JOptionPane.showMessageDialog(frmPadre, "Sucedio el siguiente error: " + ex.getMessage());
+//            JOptionPane.showMessageDialog(frmPadre, "Sucedio el siguiente error: " + ex.getMessage());
         }
     }
 

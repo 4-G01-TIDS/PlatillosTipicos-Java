@@ -1,12 +1,28 @@
 package platillostipicos.appdesktop.Publication;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.UUID;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import platillostipicos.accesoadatos.CommentDAL;
 import platillostipicos.accesoadatos.PublicationDAL;
@@ -15,6 +31,8 @@ import platillostipicos.appdesktop.utils.*;
 import platillostipicos.entidadesdenegocio.*;
 
 public final class FrmPublicationLec extends javax.swing.JFrame {
+
+    private UUID idUser = UUID.fromString("cdab3e61-1160-403d-bd1e-ccca91b7c6aa");
 
     private javax.swing.JFrame frmPadre; // Propiedad para almacenar la pantalla de Inicio del sistema
 
@@ -80,8 +98,8 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         };
 
         model.addColumn("Id");
-        model.addColumn("Descripcion");
-        model.addColumn("Fecha de publicacion");
+        model.addColumn("Descripción");
+        model.addColumn("Fecha de publicación");
         model.addColumn("UserId");
         model.addColumn("PublicationImagesId");
         model.addColumn("RestaurantId");
@@ -95,7 +113,6 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         this.tbPublication.setModel(model);
         Object row[] = null;
 
-        ArrayList<String> comentarios = new ArrayList<>();
         for (int i = 0; i < pPublications.size(); i++) {
             Publication publication = pPublications.get(i);
             model.addRow(row);
@@ -106,7 +123,6 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             model.setValueAt(publication.getPublicationImagesId(), i, ColumnaTabla.PUBLICATIONIMAGESID);
             model.setValueAt(publication.getRestaurantId(), i, ColumnaTabla.RESTAURANTID);
             byte[] imageBytes1 = publication.getPublicationImages().getImagePublication1();
-
             byte[] imageBytes2 = publication.getPublicationImages().getImagePublication2();
             byte[] imageBytes3 = publication.getPublicationImages().getImagePublication3();
             byte[] imageBytes4 = publication.getPublicationImages().getImagePublication4();
@@ -116,19 +132,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE4, imageBytes4, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE5, imageBytes5, i, model);
-
-            ArrayList<Comment> comments = CommentDAL.getByPublicationId(publication.getId().toString());
-            StringBuilder comentariosBuilder = new StringBuilder();
-            for (Comment comment : comments) {
-                comentariosBuilder.append(comment.getContent()).append("\n");
-            }
-            String comentariosTexto = comentariosBuilder.toString();
-            if (comments.isEmpty()) {
-                model.setValueAt("", i, ColumnaTabla.COMMENT); // Sin comentarios
-            } else {
-                comentarios.add(comentariosTexto); // Agregar comentarios a la lista
-                model.setValueAt("VerComentarios", i, ColumnaTabla.COMMENT); // Mostrar "VerComentarios"
-            }
+            model.setValueAt("Ver Comentarios", i, ColumnaTabla.COMMENT); // Mostrar "Ver Comentarios"
         }
 
         tbPublication.addMouseListener(new MouseAdapter() {
@@ -150,19 +154,64 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                 } else if (column == ColumnaTabla.COMMENT) {
                     try {
                         int row = tbPublication.rowAtPoint(e.getPoint());
-                        Publication selectedPublication = pPublications.get(row); // Obtener la publicación seleccionada
+                        Publication selectedPublication = pPublications.get(row);
                         ArrayList<Comment> comments = CommentDAL.getByPublicationId(selectedPublication.getId().toString());
-                        StringBuilder comentariosBuilder = new StringBuilder();
+
+                        JPanel panel = new JPanel();
+                        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
                         for (Comment comment : comments) {
-                            comentariosBuilder.append(comment.getContent()).append("\n");
+                            JPanel commentPanel = new JPanel(new BorderLayout());
+
+                            JLabel commentLabel = new JLabel(comment.getContent());
+                            commentPanel.add(commentLabel, BorderLayout.CENTER);
+
+                            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+                            JButton thumbsUpButton = new JButton();
+                            thumbsUpButton.setIcon(new ImageIcon(getClass().getResource("/platillostipicos/appdesktop/utils/imgs/hand-thumbs-up.png")));
+                            thumbsUpButton.setPreferredSize(new Dimension(16, 16));
+                            buttonPanel.add(thumbsUpButton);
+
+                            JButton thumbsDownButton = new JButton();
+                            thumbsDownButton.setIcon(new ImageIcon(getClass().getResource("/platillostipicos/appdesktop/utils/imgs/hand-thumbs-down.png")));
+                            thumbsDownButton.setPreferredSize(new Dimension(16, 16));
+                            buttonPanel.add(thumbsDownButton);
+
+                            commentPanel.add(buttonPanel, BorderLayout.EAST);
+
+                            panel.add(commentPanel);
                         }
-                        String comentariosTexto = comentariosBuilder.toString();
-                        JOptionPane.showMessageDialog(null, comentariosTexto, "Comentarios", JOptionPane.PLAIN_MESSAGE);
+
+                        JTextArea commentTextArea = new JTextArea();
+                        commentTextArea.setLineWrap(true);
+                        commentTextArea.setWrapStyleWord(true);
+                        FormUtils.setPlaceholderText(commentTextArea, "Escribe tu comentario aquí"); // Establecer el texto del marcador de posición
+
+                        panel.add(new JLabel("Nuevo Comentario:"));
+                        panel.add(commentTextArea);
+
+                        JScrollPane scrollPane = new JScrollPane(panel);
+                        scrollPane.setPreferredSize(new Dimension(400, 300)); // Establecer el tamaño preferido del JScrollPane
+
+                        int option = JOptionPane.showOptionDialog(null, scrollPane, "Comentarios",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                                null, new String[]{"Enviar comentario", "Cancelar"}, "Enviar comentario");
+
+                        if (option == 0) {
+                            String nuevoComentario = commentTextArea.getText();
+                            Comment comment = new Comment();
+                            comment.setContent(nuevoComentario);
+                            comment.setUserId(idUser);
+                            comment.setPublicationId(selectedPublication.getId()); // Establecer el ID de la publicación
+                            CommentDAL.crear(comment);
+                        } else if (option == 1) {
+                            // Cancelar
+                        }
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Error al obtener los comentarios: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        // JOptionPane.showMessageDialog(null, "Error al obtener los comentarios: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-
             }
         });
 
