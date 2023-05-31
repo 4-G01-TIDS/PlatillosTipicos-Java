@@ -4,18 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 import platillostipicos.entidadesdenegocio.Comment;
 
 public class CommentDAL {
     // <editor-fold defaultstate="collapsed" desc="READ">
-
     // <editor-fold defaultstate="collapsed" desc="GETBYID">
     public static ArrayList<Comment> getByPublicationId(String publicationId) throws Exception {
         ArrayList<Comment> comments = new ArrayList<>();
         try (Connection conn = ComunDB.obtenerConexion()) {
-            String sql = "SELECT * FROM Comments WHERE PublicationId=?";
+            String sql = "SELECT * FROM Comments WHERE PublicationId=? ORDER BY CreateDate DESC";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, publicationId);
                 obtenerDatos(ps, comments);
@@ -63,6 +64,34 @@ public class CommentDAL {
         pComment.setPublicationId(publicationIdString != null ? UUID.fromString(publicationIdString) : null);
 
         return pIndex;
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="CREATE">
+    public static int crear(Comment pComment) throws Exception {
+        int result;
+        String sql;
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            sql = "INSERT INTO Comments(Content,CreateDate,UserId,PublicationId) VALUES(?,?,?,?)";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pComment.getContent());
+                // Fecha y hora actual
+                LocalDateTime now = LocalDateTime.now();
+                Timestamp timestamp = Timestamp.valueOf(now);
+                ps.setTimestamp(2, timestamp);
+                //
+                ps.setString(3, pComment.getUserId().toString());
+                ps.setString(4, pComment.getPublicationId().toString());
+                result = ps.executeUpdate();
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        return result;
     }
     // </editor-fold> 
 }
