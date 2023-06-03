@@ -1,32 +1,15 @@
 package platillostipicos.appdesktop.Publication;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.UUID;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import platillostipicos.accesoadatos.CommentDAL;
-import platillostipicos.accesoadatos.PublicationDAL;
-import platillostipicos.appdesktop.FrmInicio;
+import platillostipicos.accesoadatos.*;
+import platillostipicos.appdesktop.*;
 import platillostipicos.appdesktop.utils.*;
 import platillostipicos.entidadesdenegocio.*;
 
@@ -137,12 +120,12 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
         tbPublication.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                int column = tbPublication.columnAtPoint(e.getPoint());
+            public void mouseClicked(MouseEvent event) {
+                int column = tbPublication.columnAtPoint(event.getPoint());
 
                 // Verificar si se hizo clic en una columna de imagen (IMAGE1, IMAGE2, IMAGE3, etc.)
                 if (column >= ColumnaTabla.IMAGE1 && column <= ColumnaTabla.IMAGE5) {
-                    int row = tbPublication.rowAtPoint(e.getPoint());
+                    int row = tbPublication.rowAtPoint(event.getPoint());
                     byte[] imageBytes = (byte[]) tbPublication.getValueAt(row, column);
 
                     // Verificar si el valor de imageBytes es null
@@ -153,7 +136,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                     }
                 } else if (column == ColumnaTabla.COMMENT) {
                     try {
-                        int row = tbPublication.rowAtPoint(e.getPoint());
+                        int row = tbPublication.rowAtPoint(event.getPoint());
                         Publication selectedPublication = pPublications.get(row);
                         ArrayList<Comment> comments = CommentDAL.getByPublicationId(selectedPublication.getId().toString());
 
@@ -162,6 +145,19 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
                         for (Comment comment : comments) {
                             JPanel commentPanel = new JPanel(new BorderLayout());
+                            Comment selectedComment = comment;
+                            CommentLike commentLike = new CommentLike();
+                            commentLike.setUserId(idUser);
+                            commentLike.setCommentId(selectedComment.getId());
+
+                            CommentLike isLike = CommentLikeDAL.getByPublicationId(commentLike);
+                            boolean votedIsLike = false;
+                            boolean votedIsDislike = false;
+
+                            if (isLike != null) {
+                                votedIsLike = (isLike.getisIsLike() && isLike.getUserId().equals(idUser));
+                                votedIsDislike = (!isLike.getisIsLike() && isLike.getUserId().equals(idUser));
+                            }
 
                             JLabel commentLabel = new JLabel(comment.getContent());
                             commentPanel.add(commentLabel, BorderLayout.CENTER);
@@ -169,13 +165,25 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
                             JButton thumbsUpButton = new JButton();
-                            thumbsUpButton.setIcon(new ImageIcon(getClass().getResource("/platillostipicos/appdesktop/utils/imgs/hand-thumbs-up.png")));
+                            PublicationUtils.setThumbsUpButtonIcon(thumbsUpButton, votedIsLike);
                             thumbsUpButton.setPreferredSize(new Dimension(16, 16));
+                            thumbsUpButton.setBorderPainted(false);
+                            thumbsUpButton.setOpaque(false);
+                            thumbsUpButton.setContentAreaFilled(false);
+                            thumbsUpButton.putClientProperty("voted", true);
+                            thumbsUpButton.addActionListener(e -> handleThumbs((JButton) e.getSource(), selectedComment));
+
                             buttonPanel.add(thumbsUpButton);
 
                             JButton thumbsDownButton = new JButton();
-                            thumbsDownButton.setIcon(new ImageIcon(getClass().getResource("/platillostipicos/appdesktop/utils/imgs/hand-thumbs-down.png")));
+                            PublicationUtils.setThumbsDownButtonIcon(thumbsDownButton, votedIsDislike);
                             thumbsDownButton.setPreferredSize(new Dimension(16, 16));
+                            thumbsDownButton.setBorderPainted(false);
+                            thumbsDownButton.setOpaque(false);
+                            thumbsDownButton.setContentAreaFilled(false);
+                            thumbsDownButton.putClientProperty("voted", false);
+                            thumbsDownButton.addActionListener(e -> handleThumbs((JButton) e.getSource(), selectedComment));
+
                             buttonPanel.add(thumbsDownButton);
 
                             commentPanel.add(buttonPanel, BorderLayout.EAST);
@@ -219,6 +227,59 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         ocultarColumnasDeLaTabla(ColumnaTabla.USERID);
         ocultarColumnasDeLaTabla(ColumnaTabla.PUBLICATIONIMAGESID);
         ocultarColumnasDeLaTabla(ColumnaTabla.RESTAURANTID);
+    }
+
+    private void handleThumbs(JButton button, Comment selectedComment) {
+        boolean voted = (boolean) button.getClientProperty("voted");
+        CommentLike commentLike = new CommentLike();
+        commentLike.setUserId(idUser);
+        commentLike.setCommentId(selectedComment.getId());
+        commentLike.setIsLike(voted);
+
+        try {
+            CommentLike existingLike = CommentLikeDAL.getByPublicationId(commentLike);
+            boolean isExistingLike = existingLike != null;
+
+            if (voted) {
+                if (isExistingLike && existingLike.getisIsLike()) {
+                    // Si ya había seleccionado "like" y hace clic nuevamente en "like", se elimina la selección
+                    CommentLikeDAL.eliminar(commentLike);
+                    PublicationUtils.setThumbsUpButtonIcon(button, false);
+                } else {
+                    // Selecciona "like" y deselecciona "dislike"
+                    PublicationUtils.setThumbsUpButtonIcon(button, true);
+                    PublicationUtils.setThumbsDownButtonIcon(PublicationUtils.getThumbsDownButton(button.getParent()), false);
+
+                    if (isExistingLike && !existingLike.getisIsLike()) {
+                        // Si ya había seleccionado "dislike", se actualiza a "like"
+                        CommentLikeDAL.update(commentLike);
+                    } else {
+                        // Si no había ninguna selección anterior, se crea un nuevo "like"
+                        CommentLikeDAL.NewLike(commentLike);
+                    }
+                }
+            } else {
+                if (isExistingLike && !existingLike.getisIsLike()) {
+                    // Si ya había seleccionado "dislike" y hace clic nuevamente en "dislike", se elimina la selección
+                    CommentLikeDAL.eliminar(commentLike);
+                    PublicationUtils.setThumbsDownButtonIcon(button, false);
+                } else {
+                    // Selecciona "dislike" y deselecciona "like"
+                    PublicationUtils.setThumbsUpButtonIcon(PublicationUtils.getThumbsUpButton(button.getParent()), false);
+                    PublicationUtils.setThumbsDownButtonIcon(button, true);
+
+                    if (isExistingLike && existingLike.getisIsLike()) {
+                        // Si ya había seleccionado "like", se actualiza a "dislike"
+                        CommentLikeDAL.update(commentLike);
+                    } else {
+                        // Si no había ninguna selección anterior, se crea un nuevo "dislike"
+                        CommentLikeDAL.NewLike(commentLike);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(FrmPublicationLec.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void configurarColumnaImagen(int columna, byte[] imageBytes, int row, DefaultTableModel model) {
