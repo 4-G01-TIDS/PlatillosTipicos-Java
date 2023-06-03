@@ -6,9 +6,8 @@ public class Main {
 
     public static void main(String[] args) {
         // TODO code application logic here
-//        
-FrmUserLec frmuser = new FrmUserLec();
-        frmuser.setVisible(true);
+        FrmInicio frmInicio = new FrmInicio();
+        frmInicio.setVisible(true);
     }
-    
+
 }

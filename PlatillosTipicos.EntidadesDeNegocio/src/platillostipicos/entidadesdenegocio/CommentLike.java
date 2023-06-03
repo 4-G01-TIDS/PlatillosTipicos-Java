@@ -41,7 +41,7 @@ public class CommentLike {
         this.Id = Id;
     }
 
-    public boolean isIsLike() {
+    public boolean getisIsLike() {
         return IsLike;
     }
 
