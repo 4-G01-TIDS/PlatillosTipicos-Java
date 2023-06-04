@@ -41,7 +41,7 @@ public class PublicationLike {
         this.Id = Id;
     }
 
-    public boolean isIsLike() {
+    public boolean getIsIsLike() {
         return IsLike;
     }
 

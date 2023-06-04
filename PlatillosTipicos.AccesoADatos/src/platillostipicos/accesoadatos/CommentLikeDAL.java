@@ -53,9 +53,11 @@ public class CommentLikeDAL {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         commentLike = new CommentLike();
+                        commentLike.setId(UUID.fromString(rs.getString("Id")));
                         commentLike.setCommentId(UUID.fromString(rs.getString("CommentId")));
                         commentLike.setUserId(UUID.fromString(rs.getString("UserId")));
                         commentLike.setIsLike(rs.getBoolean("IsLike"));
+                        commentLike.setCreateDate(rs.getTimestamp("CreateDate").toLocalDateTime());
                     }
                 }
             } catch (SQLException ex) {

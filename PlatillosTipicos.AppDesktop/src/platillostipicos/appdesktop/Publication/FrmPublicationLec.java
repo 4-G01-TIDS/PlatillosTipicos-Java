@@ -8,6 +8,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.DefaultTableCellRenderer;
+
+import java.util.List;
 import platillostipicos.accesoadatos.*;
 import platillostipicos.appdesktop.*;
 import platillostipicos.appdesktop.utils.*;
@@ -92,6 +97,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         model.addColumn("Imagen4");
         model.addColumn("Imagen5");
         model.addColumn("Comentarios");
+//        model.addColumn("Like");
 
         this.tbPublication.setModel(model);
         Object row[] = null;
@@ -115,7 +121,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE4, imageBytes4, i, model);
             configurarColumnaImagen(ColumnaTabla.IMAGE5, imageBytes5, i, model);
-            model.setValueAt("Ver Comentarios", i, ColumnaTabla.COMMENT); // Mostrar "Ver Comentarios"
+            model.setValueAt("Opinar", i, ColumnaTabla.COMMENT);
         }
 
         tbPublication.addMouseListener(new MouseAdapter() {
@@ -202,17 +208,71 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         JScrollPane scrollPane = new JScrollPane(panel);
                         scrollPane.setPreferredSize(new Dimension(400, 300)); // Establecer el tamaño preferido del JScrollPane
 
+//                        Publication publication = selectedPublication;
+                        PublicationLike publicationLike = new PublicationLike();
+                        publicationLike.setUserId(idUser);
+                        publicationLike.setPublicationId(selectedPublication.getId());
+                        PublicationLike isLikePublication = PublicationLikeDAL.getLikeByPublicationAndUser(publicationLike);
+                        boolean votedIsLike = false;
+                        boolean votedIsDislike = false;
+
+                        if (isLikePublication != null) {
+                            votedIsLike = (isLikePublication.getIsIsLike() && isLikePublication.getUserId().equals(idUser));
+                            votedIsDislike = (!isLikePublication.getIsIsLike() && isLikePublication.getUserId().equals(idUser));
+                        }
+
+                        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+                        JButton thumbsUpPublication = new JButton();
+                        PublicationUtils.setThumbsUpButtonIcon(thumbsUpPublication, votedIsLike);
+                        thumbsUpPublication.setPreferredSize(new Dimension(16, 16));
+                        thumbsUpPublication.setBorderPainted(false);
+                        thumbsUpPublication.setOpaque(false);
+                        thumbsUpPublication.setContentAreaFilled(false);
+                        thumbsUpPublication.putClientProperty("voted", true);
+                        thumbsUpPublication.addActionListener(e -> handleThumbsPublications((JButton) e.getSource(), selectedPublication));
+
+                        buttonPanel.add(thumbsUpPublication);
+
+                        JButton thumbsDownButton = new JButton();
+                        PublicationUtils.setThumbsDownButtonIcon(thumbsDownButton, votedIsDislike);
+                        thumbsDownButton.setPreferredSize(new Dimension(16, 16));
+                        thumbsDownButton.setBorderPainted(false);
+                        thumbsDownButton.setOpaque(false);
+                        thumbsDownButton.setContentAreaFilled(false);
+                        thumbsDownButton.putClientProperty("voted", false);
+                        thumbsDownButton.addActionListener(e -> handleThumbsPublications((JButton) e.getSource(), selectedPublication));
+
+                        buttonPanel.add(thumbsDownButton);
+
                         int option = JOptionPane.showOptionDialog(null, scrollPane, "Comentarios",
                                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
-                                null, new String[]{"Enviar comentario", "Cancelar"}, "Enviar comentario");
+                                null, new Object[]{"Enviar comentario", "Cancelar", buttonPanel}, "Enviar comentario");
 
                         if (option == 0) {
                             String nuevoComentario = commentTextArea.getText();
-                            Comment comment = new Comment();
-                            comment.setContent(nuevoComentario);
-                            comment.setUserId(idUser);
-                            comment.setPublicationId(selectedPublication.getId()); // Establecer el ID de la publicación
-                            CommentDAL.crear(comment);
+                            String placeholder = "Escribe tu comentario aquí";
+
+                            while (nuevoComentario.equals(placeholder)) {
+                                JOptionPane.showMessageDialog(null, "Escribe un comentario", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                                option = JOptionPane.showOptionDialog(null, scrollPane, "Comentarios",
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                                        null, new String[]{"Enviar comentario", "Cancelar"}, "Enviar comentario");
+
+                                if (option == 0) {
+                                    nuevoComentario = commentTextArea.getText();
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            if (option == 0) {
+                                Comment comment = new Comment();
+                                comment.setContent(nuevoComentario);
+                                comment.setUserId(idUser);
+                                comment.setPublicationId(selectedPublication.getId()); // Establecer el ID de la publicación
+                                CommentDAL.crear(comment);
+                            }
                         } else if (option == 1) {
                             // Cancelar
                         }
@@ -227,6 +287,68 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
         ocultarColumnasDeLaTabla(ColumnaTabla.USERID);
         ocultarColumnasDeLaTabla(ColumnaTabla.PUBLICATIONIMAGESID);
         ocultarColumnasDeLaTabla(ColumnaTabla.RESTAURANTID);
+    }
+
+    private void handleThumbsPublications(JButton button, Publication selectedPublication) {
+        boolean voted = (boolean) button.getClientProperty("voted");
+        PublicationLike publicationLike = new PublicationLike();
+        publicationLike.setUserId(idUser);
+        publicationLike.setPublicationId(selectedPublication.getId());
+        publicationLike.setIsLike(voted);
+
+        try {
+            PublicationLike existingLike = PublicationLikeDAL.getLikeByPublicationAndUser(publicationLike);
+            boolean isExistingLike = existingLike != null;
+
+            if (voted) {
+                if (isExistingLike && existingLike.getIsIsLike()) {
+                    // Si ya había seleccionado "like" y hace clic nuevamente en "like", se elimina la selección
+                    PublicationLikeDAL.eliminar(publicationLike);
+                    PublicationUtils.setThumbsUpButtonIcon(button, false);
+                } else {
+                    // Selecciona "like" y deselecciona "dislike"
+                    PublicationUtils.setThumbsUpButtonIcon(button, true);
+                    PublicationUtils.setThumbsDownButtonIcon(PublicationUtils.getThumbsDownButton(button.getParent()), false);
+
+                    if (isExistingLike && !existingLike.getIsIsLike()) {
+                        // Si ya había seleccionado "dislike", se actualiza a "like"
+                        PublicationLikeDAL.update(publicationLike);
+                    } else {
+                        // Si no había ninguna selección anterior, se crea un nuevo "like"
+                        PublicationLikeDAL.NewLikePublication(publicationLike);
+                    }
+                }
+            } else {
+                if (isExistingLike && !existingLike.getIsIsLike()) {
+                    // Si ya había seleccionado "dislike" y hace clic nuevamente en "dislike", se elimina la selección
+                    PublicationLikeDAL.eliminar(publicationLike);
+                    PublicationUtils.setThumbsDownButtonIcon(button, false);
+                } else {
+                    // Selecciona "dislike" y deselecciona "like"
+                    PublicationUtils.setThumbsUpButtonIcon(PublicationUtils.getThumbsUpButton(button.getParent()), false);
+                    PublicationUtils.setThumbsDownButtonIcon(button, true);
+
+                    if (isExistingLike && existingLike.getIsIsLike()) {
+                        // Si ya había seleccionado "like", se actualiza a "dislike"
+                        PublicationLikeDAL.update(publicationLike);
+                    } else {
+                        // Si no había ninguna selección anterior, se crea un nuevo "dislike"
+                        PublicationLikeDAL.NewLikePublication(publicationLike);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(FrmPublicationLec.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+// Dentro del método handleThumbs
+    public void handleThumbss(JButton button, Comment comment) {
+        // Aquí se ejecuta el código para el manejo del like o dislike
+
+        // Mostrar el mensaje de alerta
+        String message = "Has dado " + " al comentario";
+        JOptionPane.showMessageDialog(null, message, "Mensaje", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void handleThumbs(JButton button, Comment selectedComment) {

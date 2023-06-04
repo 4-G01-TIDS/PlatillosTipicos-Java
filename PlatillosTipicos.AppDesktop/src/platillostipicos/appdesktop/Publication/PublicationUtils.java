@@ -6,14 +6,8 @@ package platillostipicos.appdesktop.Publication;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import platillostipicos.accesoadatos.CommentLikeDAL;
-import platillostipicos.entidadesdenegocio.Comment;
-import platillostipicos.entidadesdenegocio.CommentLike;
 
 /**
  *
