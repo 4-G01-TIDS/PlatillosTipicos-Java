@@ -243,14 +243,33 @@ public class PublicationDAL {
     // </editor-fold> 
     // <editor-fold defaultstate="collapsed" desc="UPDATE">
     public static int modificar(Publication pPublication) throws Exception {
+        if (pPublication.getPublicationImagesId() == null) {
+            UUID idImagesPublication = UUID.randomUUID();
+            pPublication.getPublicationImages().setId(idImagesPublication);
+            PublicationImagesDAL.crearImagenes(pPublication.getPublicationImages());
+            pPublication.setPublicationImagesId(idImagesPublication);
+        } else {
+            PublicationImagesDAL.modificarImgP(pPublication.getPublicationImages());
+        }
         int result;
         String sql;
         try (Connection conn = ComunDB.obtenerConexion();) {
-            sql = "UPDATE Publications SET Description=? WHERE Id=?";
+            if (pPublication.getPublicationImagesId() == null) {
+                sql = "UPDATE Publications SET Description=? WHERE Id=?";
+
+            } else {
+                sql = "UPDATE Publications SET Description=?, PublicationImagesId=? WHERE Id=?";
+
+            }
             try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
-                PublicationImagesDAL.modificarImgP(pPublication.getPublicationImages());
+
                 ps.setString(1, pPublication.getDescription());
-                ps.setString(2, pPublication.getId().toString());
+                if (pPublication.getPublicationImagesId() != null) {
+                    ps.setString(2, pPublication.getPublicationImagesId().toString());
+
+                }
+                ps.setString(3, pPublication.getId().toString());
+
                 result = ps.executeUpdate();
                 ps.close(); // cerrar el PreparedStatement
             } catch (SQLException ex) {

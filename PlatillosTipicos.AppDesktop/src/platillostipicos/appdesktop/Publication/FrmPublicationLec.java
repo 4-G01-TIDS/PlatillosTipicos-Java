@@ -8,11 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.DefaultTableCellRenderer;
-
-import java.util.List;
 import platillostipicos.accesoadatos.*;
 import platillostipicos.appdesktop.*;
 import platillostipicos.appdesktop.utils.*;
@@ -208,7 +203,6 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         JScrollPane scrollPane = new JScrollPane(panel);
                         scrollPane.setPreferredSize(new Dimension(400, 300)); // Establecer el tamaño preferido del JScrollPane
 
-//                        Publication publication = selectedPublication;
                         PublicationLike publicationLike = new PublicationLike();
                         publicationLike.setUserId(idUser);
                         publicationLike.setPublicationId(selectedPublication.getId());
@@ -245,9 +239,12 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
                         buttonPanel.add(thumbsDownButton);
 
-                        int option = JOptionPane.showOptionDialog(null, scrollPane, "Comentarios",
+                        Object[] options = {"Enviar comentario", "Cancelar"};
+                        Object[] message = {scrollPane, buttonPanel};
+
+                        int option = JOptionPane.showOptionDialog(null, message, "Comentarios",
                                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
-                                null, new Object[]{"Enviar comentario", "Cancelar", buttonPanel}, "Enviar comentario");
+                                null, options, options[0]);
 
                         if (option == 0) {
                             String nuevoComentario = commentTextArea.getText();
@@ -255,9 +252,9 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
 
                             while (nuevoComentario.equals(placeholder)) {
                                 JOptionPane.showMessageDialog(null, "Escribe un comentario", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-                                option = JOptionPane.showOptionDialog(null, scrollPane, "Comentarios",
+                                option = JOptionPane.showOptionDialog(null, message, "Comentarios",
                                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
-                                        null, new String[]{"Enviar comentario", "Cancelar"}, "Enviar comentario");
+                                        null, new Object[]{"Enviar comentario", "Cancelar"}, "Enviar comentario");
 
                                 if (option == 0) {
                                     nuevoComentario = commentTextArea.getText();
@@ -280,6 +277,7 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
                         // JOptionPane.showMessageDialog(null, "Error al obtener los comentarios: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+
             }
         });
 

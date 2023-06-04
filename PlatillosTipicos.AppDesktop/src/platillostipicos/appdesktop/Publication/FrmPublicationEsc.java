@@ -10,7 +10,10 @@ import platillostipicos.entidadesdenegocio.*;
 import platillostipicos.accesoadatos.PublicationDAL;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import platillostipicos.accesoadatos.PublicationImagesDAL;
 
 public class FrmPublicationEsc extends javax.swing.JFrame {
 
@@ -166,16 +169,18 @@ public class FrmPublicationEsc extends javax.swing.JFrame {
 
         if (imageData1 != null || imageData2 != null || imageData3 != null || imageData4 != null || imageData5 != null) {
             if (publicationActual.getPublicationImagesId() == null) {
-                UUID idImagesPublication = UUID.randomUUID();
-                images.setId(idImagesPublication);
+//                UUID idImagesPublication = UUID.randomUUID();
+//                images.setId(idImagesPublication);
+//                this.publicationActual.setPublicationImagesId(idImagesPublication);
+                this.publicationActual.setPublicationImages(images);
+                
             } else {
                 images.setId(publicationActual.getPublicationImagesId());
+                this.publicationActual.setPublicationImages(images);
+
             }
 
         }
-        this.publicationActual.setPublicationImagesId(images.getId());
-
-        this.publicationActual.setPublicationImages(images);
 
     }
 
