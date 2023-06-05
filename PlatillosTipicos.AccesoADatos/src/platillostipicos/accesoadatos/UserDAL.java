@@ -12,9 +12,11 @@ import java.util.UUID;
  * @author Stevn
  */
 public class UserDAL {
+    
+    // <editor-fold defaultstate="collapsed" desc="Obtener Datos">
      // Metodo para obtener los campos a utilizar en la consulta SELECT de la tabla de Usuario
     static String obtenerCampos() {
-        return "u.Id, u.Name, u.LastName, u.Email, u.EmailConfirmed, u.IsCustomer, u.CreationDate, u.IsNative, u.Nationality, u.Dui, u.PhoneNumber, u.IsCustomer, ";
+        return "u.Id, u.Name, u.LastName, u.Email, u.ImgUser, u.EmailConfirmed, u.IsCustomer, u.CreationDate, u.IsNative, u.Nationality, u.Dui, u.PhoneNumber, u.IsCustomer ";
     }
     
     // Metodo para  ejecutar el ResultSet de la consulta SELECT a la tabla de Rol 
@@ -30,6 +32,7 @@ public class UserDAL {
             throw ex; // Enviar al siguiente metodo el error al obtener ResultSet de la clase ComunDB   en el caso que suceda 
         }
     }
+    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="READ">
     static int asignarDatosResultSet(User pUser, ResultSet pResultSet, int pIndex) throws Exception {
@@ -46,8 +49,6 @@ public class UserDAL {
         pUser.setImgUser(pResultSet.getBytes(pIndex) == null?null:pResultSet.getBytes(pIndex));
         return pIndex;
     }
-    
-    
    
     
     // Metodo para obtener el SELECT a la tabla Usuario y el top en el caso que se utilice una base de datos SQL SERVER

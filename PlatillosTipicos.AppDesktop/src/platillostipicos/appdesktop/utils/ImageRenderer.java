@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 public class ImageRenderer extends DefaultTableCellRenderer {
 
@@ -73,5 +74,21 @@ public class ImageRenderer extends DefaultTableCellRenderer {
         }
 
         return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    }
+    
+    
+    
+    
+    public static void configurarColumnaImagen(javax.swing.JTable table,  int columna, byte[] imageBytes, int row, DefaultTableModel model) {
+        if (imageBytes != null) {
+            int cellHeight = 50; // Ajusta la altura según tus necesidades
+            int tableWidth = 50; // Obtener el ancho actual de la tabla
+            //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
+
+            ImageUtils imageRenderer = new ImageUtils(cellHeight, tableWidth);
+
+            table.getColumnModel().getColumn(columna).setCellRenderer(imageRenderer);
+            model.setValueAt(imageBytes, row, columna);
+        }
     }
 }

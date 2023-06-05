@@ -25,6 +25,8 @@ import platillostipicos.entidadesdenegocio.*;
  */
 public class FrmUserLec extends javax.swing.JFrame {
     
+    private javax.swing.JFrame frmPadre; 
+    
      private class ColumnaTabla {
 
         static final int ID = 0;
@@ -47,6 +49,8 @@ public class FrmUserLec extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Sucedio el siguiente error: " + ex.getMessage());
         }
     }
+    
+    
 
     public void iniciarDatosDeLaTabla(ArrayList<User> pUser) throws Exception {
         DefaultTableModel model = new DefaultTableModel() {
@@ -61,6 +65,7 @@ public class FrmUserLec extends javax.swing.JFrame {
         model.addColumn("LastName");
         model.addColumn("ImgUser");
         model.addColumn("Email");
+        model.addColumn("PhoneNumber");
         
         
 
@@ -74,14 +79,33 @@ public class FrmUserLec extends javax.swing.JFrame {
             model.setValueAt(publication.getId(), i, ColumnaTabla.ID);
             model.setValueAt(publication.getName(), i, ColumnaTabla.NAME);
             model.setValueAt(publication.getLastName(), i, ColumnaTabla.LASTNAME);
+            //model.setValueAt(publication.getImgUser(), i, ColumnaTabla.IMG);
+            
+            ImageRenderer.configurarColumnaImagen(tbUser, ColumnaTabla.IMG, publication.getImgUser(), i, model);
             model.setValueAt(publication.getEmail(), i, ColumnaTabla.EMAIL);
+            model.setValueAt(publication.getPhoneNumber(), i, ColumnaTabla.PHONE);
             
             
 //        ocultarColumnasDeLaTabla(ColumnaTabla.ID);
     }
     
     }
-
+    
+   
+    
+    
+    public FrmUserLec(javax.swing.JFrame pFrmPadre) {
+        initComponents();
+        this.setExtendedState(MAXIMIZED_BOTH);
+        iniciarDatos(pFrmPadre);
+    }
+    
+     private void iniciarDatos(javax.swing.JFrame pFrmPadre) {
+        frmPadre = pFrmPadre;
+        pFrmPadre.setEnabled(true); // deshabilitar el formulario FrmInicio
+        buscar();
+    }
+    
     /**
      * Creates new form FrmUserLec
      */

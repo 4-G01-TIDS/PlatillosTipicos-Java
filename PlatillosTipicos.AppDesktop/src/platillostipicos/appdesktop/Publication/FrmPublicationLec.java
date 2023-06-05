@@ -111,11 +111,11 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             byte[] imageBytes3 = publication.getPublicationImages().getImagePublication3();
             byte[] imageBytes4 = publication.getPublicationImages().getImagePublication4();
             byte[] imageBytes5 = publication.getPublicationImages().getImagePublication5();
-            configurarColumnaImagen(ColumnaTabla.IMAGE1, imageBytes1, i, model);
-            configurarColumnaImagen(ColumnaTabla.IMAGE2, imageBytes2, i, model);
-            configurarColumnaImagen(ColumnaTabla.IMAGE3, imageBytes3, i, model);
-            configurarColumnaImagen(ColumnaTabla.IMAGE4, imageBytes4, i, model);
-            configurarColumnaImagen(ColumnaTabla.IMAGE5, imageBytes5, i, model);
+            ImageRenderer.configurarColumnaImagen(tbPublication, ColumnaTabla.IMAGE1, imageBytes1, i, model);
+            ImageRenderer.configurarColumnaImagen(tbPublication, ColumnaTabla.IMAGE2, imageBytes2, i, model);
+            ImageRenderer.configurarColumnaImagen(tbPublication, ColumnaTabla.IMAGE3, imageBytes3, i, model);
+            ImageRenderer.configurarColumnaImagen(tbPublication, ColumnaTabla.IMAGE4, imageBytes4, i, model);
+            ImageRenderer.configurarColumnaImagen(tbPublication, ColumnaTabla.IMAGE5, imageBytes5, i, model);
             model.setValueAt("Opinar", i, ColumnaTabla.COMMENT);
         }
 
@@ -399,19 +399,6 @@ public final class FrmPublicationLec extends javax.swing.JFrame {
             }
         } catch (Exception ex) {
             Logger.getLogger(FrmPublicationLec.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void configurarColumnaImagen(int columna, byte[] imageBytes, int row, DefaultTableModel model) {
-        if (imageBytes != null) {
-            int cellHeight = 50; // Ajusta la altura según tus necesidades
-            int tableWidth = 50; // Obtener el ancho actual de la tabla
-            //int tableWidth = tbPublication.getWidth(); // Obtener el ancho actual de la tabla
-
-            ImageUtils imageRenderer = new ImageUtils(cellHeight, tableWidth);
-
-            tbPublication.getColumnModel().getColumn(columna).setCellRenderer(imageRenderer);
-            model.setValueAt(imageBytes, row, columna);
         }
     }
 

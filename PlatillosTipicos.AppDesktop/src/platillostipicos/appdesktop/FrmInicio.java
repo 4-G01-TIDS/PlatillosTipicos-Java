@@ -1,5 +1,6 @@
 package platillostipicos.appdesktop;
 
+import User.FrmUserLec;
 import platillostipicos.appdesktop.Publication.FrmPublicationLec;
 
 public class FrmInicio extends javax.swing.JFrame {
@@ -26,6 +27,7 @@ public class FrmInicio extends javax.swing.JFrame {
         meRegister = new javax.swing.JMenu();
         meExplorar = new javax.swing.JMenu();
         meSalir = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,6 +79,18 @@ public class FrmInicio extends javax.swing.JFrame {
         });
         jMenuBar1.add(meSalir);
 
+        jMenu1.setText("Usuarios");
+        jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                jMenu1MenuSelected(evt);
+            }
+        });
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -117,8 +131,17 @@ public class FrmInicio extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_meExplorarMenuSelected
 
+    private void jMenu1MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuSelected
+        // TODO add your handling code here:
+        FrmUserLec frmUser = new FrmUserLec(this);
+        frmUser.setVisible(true);
+        this.setEnabled(false);
+        this.setVisible(false);
+    }//GEN-LAST:event_jMenu1MenuSelected
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu meExplorar;
     private javax.swing.JMenu meIniciarSession;
