@@ -30,7 +30,9 @@ public class FrmUserLec extends javax.swing.JFrame {
         static final int ID = 0;
         static final int NAME = 1;
         static final int LASTNAME = 2;
-        static final int EMAIL = 3;
+        static final int IMG = 3;
+        static final int EMAIL = 4;
+        static final int PHONE = 5;
 
     }
     
@@ -57,6 +59,7 @@ public class FrmUserLec extends javax.swing.JFrame {
         model.addColumn("Id");
         model.addColumn("Name");
         model.addColumn("LastName");
+        model.addColumn("ImgUser");
         model.addColumn("Email");
         
         

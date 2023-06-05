@@ -1,6 +1,6 @@
 package platillostipicos.entidadesdenegocio;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +15,7 @@ public class User {
     private String EmailConfirmationToken;
     private String Password;
     private boolean IsCustomer;
-    private Date CreationDate;
+    private LocalDateTime CreationDate;
     private boolean IsNative;
     private String Nationality;
     private String Dui;
@@ -29,22 +29,24 @@ public class User {
     public User() {
     }
 
-    public User(UUID Id, String Name, String LastName, byte[] ImgUser, String Email, boolean EmailConfirmed, String Password, boolean IsCustomer, Date CreationDate, boolean IsNative, String Nationality, String Dui, boolean Membership, String PhoneNumber, boolean PhoneNumberConfirmed, List<UserRole> UserRoles) {
+    public User(UUID Id, String Name, String LastName, byte[] ImgUser, String Email, boolean EmailConfirmed, String EmailConfirmationToken, String Password, boolean IsCustomer, LocalDateTime CreationDate, boolean IsNative, String Nationality, String Dui, boolean DuiConfirmed, boolean Membership, String PhoneNumber, boolean PhoneNumberConfirmed) {
         this.Id = Id;
         this.Name = Name;
         this.LastName = LastName;
         this.ImgUser = ImgUser;
         this.Email = Email;
         this.EmailConfirmed = EmailConfirmed;
+        this.EmailConfirmationToken = EmailConfirmationToken;
         this.Password = Password;
         this.IsCustomer = IsCustomer;
         this.CreationDate = CreationDate;
         this.IsNative = IsNative;
         this.Nationality = Nationality;
         this.Dui = Dui;
+        this.DuiConfirmed = DuiConfirmed;
         this.Membership = Membership;
         this.PhoneNumber = PhoneNumber;
-        this.UserRoles = UserRoles;
+        this.PhoneNumberConfirmed = PhoneNumberConfirmed;
     }
 
     public UUID getId() {
@@ -111,7 +113,7 @@ public class User {
         this.Password = Password;
     }
 
-    public boolean isIsCustomer() {
+    public boolean getIsCustomer() {
         return IsCustomer;
     }
 
@@ -119,15 +121,15 @@ public class User {
         this.IsCustomer = IsCustomer;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return CreationDate;
     }
 
-    public void setCreationDate(Date CreationDate) {
+    public void setCreationDate(LocalDateTime CreationDate) {
         this.CreationDate = CreationDate;
     }
 
-    public boolean isIsNative() {
+    public boolean getIsNative() {
         return IsNative;
     }
 
@@ -198,5 +200,5 @@ public class User {
     public void setTop_aux(int top_aux) {
         this.top_aux = top_aux;
     }
-
+    
 }

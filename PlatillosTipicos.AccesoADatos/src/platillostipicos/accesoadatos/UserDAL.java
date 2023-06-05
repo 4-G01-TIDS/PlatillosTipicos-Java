@@ -14,7 +14,7 @@ import java.util.UUID;
 public class UserDAL {
      // Metodo para obtener los campos a utilizar en la consulta SELECT de la tabla de Usuario
     static String obtenerCampos() {
-        return "u.Id, u.Name, u.LastName, u.Email, u.EmailConfirmed, u.IsCustomer, u.CreationDate, u.IsNative, u.Nationality, u.Dui, u.PhoneNumber";
+        return "u.Id, u.Name, u.LastName, u.Email, u.EmailConfirmed, u.IsCustomer, u.CreationDate, u.IsNative, u.Nationality, u.Dui, u.PhoneNumber, u.IsCustomer, ";
     }
     
     // Metodo para  ejecutar el ResultSet de la consulta SELECT a la tabla de Rol 
@@ -42,6 +42,8 @@ public class UserDAL {
         pUser.setLastName(pResultSet.getString(pIndex) == null?null:pResultSet.getString(pIndex)); // index 2
         pIndex++;
         pUser.setEmail(pResultSet.getString(pIndex)); // index 2
+        pIndex++;
+        pUser.setImgUser(pResultSet.getBytes(pIndex) == null?null:pResultSet.getBytes(pIndex));
         return pIndex;
     }
     
@@ -144,6 +146,8 @@ public class UserDAL {
         }
     }
     // </editor-fold>
+    
+    
 
     
     
