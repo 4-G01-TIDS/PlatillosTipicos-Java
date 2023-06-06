@@ -5,6 +5,7 @@
 package platillostipicos.accesoadatos;
 import platillostipicos.entidadesdenegocio.User;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 /**
@@ -31,6 +32,36 @@ public class UserDAL {
         } catch (SQLException ex) {
             throw ex; // Enviar al siguiente metodo el error al obtener ResultSet de la clase ComunDB   en el caso que suceda 
         }
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="GETBYID">
+    public static User GetById(User pPublication) throws Exception {
+        User publication = new User();
+        ArrayList<User> publications = new ArrayList();
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            String sql = obtenerSelect(pPublication);
+            sql += " WHERE u.Id=?";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pPublication.getId().toString());
+                obtenerDatos(ps, publications);
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        if (publications.size() > 0) {
+            publication = publications.get(0);
+        }
+        if (publication.getImgUser()!= null) {
+            User pImgs = new User();
+            pImgs.setImgUser(publication.getImgUser());
+//            publication.setImgUser(UserDAL.GetByIdImgs(pImgs));
+        }
+        return publication;
     }
     // </editor-fold>
     
@@ -147,6 +178,36 @@ public class UserDAL {
         }
     }
     // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="CREATE">
+    public static int crear(User pUser) throws Exception {
+        int result;
+        String sql;
+        try (Connection conn = ComunDB.obtenerConexion();) {
+            sql = "INSERT INTO Users(Name,CreationDate,Password, LastName,ImgUser,Email) VALUES(?,?,?,?,?,?)";
+            try (PreparedStatement ps = ComunDB.createPreparedStatement(conn, sql);) {
+                ps.setString(1, pUser.getName());
+                // Fecha y hora actual
+                LocalDateTime now = LocalDateTime.now();
+                Timestamp timestamp = Timestamp.valueOf(now);
+                ps.setTimestamp(2, timestamp);
+                //
+                ps.setString(3, pUser.getPassword());
+                ps.setString(4, pUser.getLastName());
+                ps.setBytes(5, pUser.getImgUser());
+                ps.setString(6, pUser.getEmail());
+                result = ps.executeUpdate();
+                ps.close();
+            } catch (SQLException ex) {
+                throw ex;
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        return result;
+    }
+    // </editor-fold> 
     
     
 

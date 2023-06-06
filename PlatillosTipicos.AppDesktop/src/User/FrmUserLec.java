@@ -91,7 +91,29 @@ public class FrmUserLec extends javax.swing.JFrame {
     
     }
     
+   private void abrirFormularioDeEscritura(int pOpcionForm) {
+        User publication = new User();
+        if (pOpcionForm == FormEscOpcion.CREAR || this.llenarEntidadConLaFilaSeleccionadaDeLaTabla(publication)) {
+            FrmUserEsc frmPublicationEsc = new FrmUserEsc(publication, pOpcionForm, this);
+            frmPublicationEsc.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "No ha seleccionado ninguna fila.");
+        }
+    }
    
+   private boolean llenarEntidadConLaFilaSeleccionadaDeLaTabla(User pPublication) {
+        int filaSelect;
+        boolean isSelectRow = false;
+        filaSelect = this.tbUser.getSelectedRow();
+        if (filaSelect != -1) {
+            isSelectRow = true;
+            pPublication.setId((UUID) this.tbUser.getValueAt(filaSelect, ColumnaTabla.ID));
+            pPublication.setName((String) this.tbUser.getValueAt(filaSelect, ColumnaTabla.NAME));
+            pPublication.setEmail((String) this.tbUser.getValueAt(filaSelect, ColumnaTabla.NAME));
+        }
+        return isSelectRow;
+    }
     
     
     public FrmUserLec(javax.swing.JFrame pFrmPadre) {
@@ -125,6 +147,7 @@ public class FrmUserLec extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tbUser = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,13 +164,22 @@ public class FrmUserLec extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tbUser);
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -156,10 +188,19 @@ public class FrmUserLec extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(119, 119, 119)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        this.abrirFormularioDeEscritura(FormEscOpcion.CREAR);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,6 +238,7 @@ public class FrmUserLec extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbUser;
     // End of variables declaration//GEN-END:variables

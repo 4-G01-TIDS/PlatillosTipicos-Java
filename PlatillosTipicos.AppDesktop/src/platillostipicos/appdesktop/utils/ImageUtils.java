@@ -9,12 +9,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ImageUtils extends DefaultTableCellRenderer {
 
@@ -80,15 +83,14 @@ public class ImageUtils extends DefaultTableCellRenderer {
 
         return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     }
-    
-    
-    
+
     /**
      * Convierte una imagen en un array de bytes en el formato especificado.
      *
-     * @param image  La imagen a convertir.
+     * @param image La imagen a convertir.
      * @param format El formato de la imagen (por ejemplo, "png", "jpg").
-     * @return El array de bytes que representa la imagen en el formato especificado.
+     * @return El array de bytes que representa la imagen en el formato
+     * especificado.
      * @throws IOException Si ocurre un error al convertir la imagen.
      */
     public static byte[] imageToByteArray(Image image, String format) throws IOException {
@@ -116,10 +118,12 @@ public class ImageUtils extends DefaultTableCellRenderer {
     }
 
     /**
-     * Obtiene los datos de imagen en formato de bytes a partir de un objeto Icon.
+     * Obtiene los datos de imagen en formato de bytes a partir de un objeto
+     * Icon.
      *
      * @param icon El objeto Icon que contiene la imagen.
-     * @return El array de bytes que representa la imagen, o null si el Icon no es una instancia de ImageIcon.
+     * @return El array de bytes que representa la imagen, o null si el Icon no
+     * es una instancia de ImageIcon.
      */
     public static byte[] getImageDataFromIcon(Icon icon) {
         if (icon instanceof ImageIcon) {
@@ -136,13 +140,16 @@ public class ImageUtils extends DefaultTableCellRenderer {
     }
 
     /**
-     * Obtiene los datos de imagen en formato de bytes a partir de un objeto JLabel que contiene un Icon.
+     * Obtiene los datos de imagen en formato de bytes a partir de un objeto
+     * JLabel que contiene un Icon.
      *
      * @param label El JLabel que contiene la imagen.
-     * @return El array de bytes que representa la imagen, o null si el Icon del JLabel no es una instancia de ImageIcon.
+     * @return El array de bytes que representa la imagen, o null si el Icon del
+     * JLabel no es una instancia de ImageIcon.
      */
     public static byte[] getImageDataFromLabel(JLabel label) {
         Icon icon = label.getIcon();
         return getImageDataFromIcon(icon);
     }
+
 }
