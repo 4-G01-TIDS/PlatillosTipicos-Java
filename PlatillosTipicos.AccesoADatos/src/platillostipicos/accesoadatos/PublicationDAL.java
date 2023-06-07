@@ -13,9 +13,11 @@ public class PublicationDAL {
 
     // <editor-fold defaultstate="collapsed" desc="CREATE">
     public static int crear(Publication pPublication) throws Exception {
-        if (pPublication.getPublicationImagesId() != null) {
+        if (pPublication.getPublicationImagesId() == null && pPublication.getPublicationImages() != null) {
+            UUID idImagesPublication = UUID.randomUUID();
+            pPublication.getPublicationImages().setId(idImagesPublication);
             PublicationImagesDAL.crearImagenes(pPublication.getPublicationImages());
-
+            pPublication.setPublicationImagesId(idImagesPublication);
         }
 
         int result;
@@ -243,12 +245,12 @@ public class PublicationDAL {
     // </editor-fold> 
     // <editor-fold defaultstate="collapsed" desc="UPDATE">
     public static int modificar(Publication pPublication) throws Exception {
-        if (pPublication.getPublicationImagesId() == null) {
+        if (pPublication.getPublicationImagesId() == null && pPublication.getPublicationImages() != null) {
             UUID idImagesPublication = UUID.randomUUID();
             pPublication.getPublicationImages().setId(idImagesPublication);
             PublicationImagesDAL.crearImagenes(pPublication.getPublicationImages());
             pPublication.setPublicationImagesId(idImagesPublication);
-        } else {
+        } else if (pPublication.getPublicationImagesId() != null) {
             PublicationImagesDAL.modificarImgP(pPublication.getPublicationImages());
         }
         int result;
@@ -266,9 +268,11 @@ public class PublicationDAL {
                 ps.setString(1, pPublication.getDescription());
                 if (pPublication.getPublicationImagesId() != null) {
                     ps.setString(2, pPublication.getPublicationImagesId().toString());
-
+                    ps.setString(3, pPublication.getId().toString());
+                }else{
+                    ps.setString(2, pPublication.getId().toString());
                 }
-                ps.setString(3, pPublication.getId().toString());
+                
 
                 result = ps.executeUpdate();
                 ps.close(); // cerrar el PreparedStatement
