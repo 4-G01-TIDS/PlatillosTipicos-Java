@@ -105,8 +105,6 @@ public class PublicationDALIT {
         } catch (SQLException ex) {
             throw ex;
         }
-        System.out.println(publication.getId().getClass() + " " + publication.getId());
-        System.out.println(currentPublication.getId().getClass() + " " + currentPublication.getId());
         assertTrue(publication.getId().equals(currentPublication.getId()));
     }
 

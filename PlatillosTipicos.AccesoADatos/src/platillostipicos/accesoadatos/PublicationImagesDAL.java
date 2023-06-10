@@ -12,7 +12,6 @@ public class PublicationImagesDAL {
 
     // <editor-fold defaultstate="collapsed" desc="CREATE">
     public static int crearImagenes(PublicationImages pPublicationImages) throws Exception {
-
         int result;
         String sql;
         try (Connection conn = ComunDB.obtenerConexion();) {
