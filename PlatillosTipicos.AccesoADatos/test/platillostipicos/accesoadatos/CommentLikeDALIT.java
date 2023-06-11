@@ -2,17 +2,11 @@ package platillostipicos.accesoadatos;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import platillostipicos.entidadesdenegocio.Comment;
-import platillostipicos.entidadesdenegocio.CommentLike;
-import platillostipicos.entidadesdenegocio.Publication;
+import platillostipicos.entidadesdenegocio.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CommentLikeDALIT {
@@ -66,7 +60,7 @@ public class CommentLikeDALIT {
         System.out.println("getByPublicationId");
         CommentLike result = CommentLikeDAL.getByPublicationId(currentCommentLike);
         currentCommentLike = result;
-        assertTrue(currentCommentLike.getId() != null);
+        assertTrue(currentCommentLike.getId() != null); 
     }
 
     /**

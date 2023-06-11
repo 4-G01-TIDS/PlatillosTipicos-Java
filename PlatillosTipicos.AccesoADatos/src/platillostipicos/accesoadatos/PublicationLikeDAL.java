@@ -53,8 +53,10 @@ public class PublicationLikeDAL {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         publicationLike = new PublicationLike();
+                        publicationLike.setId(UUID.fromString(rs.getString("Id")));
                         publicationLike.setPublicationId(UUID.fromString(rs.getString("PublicationId")));
                         publicationLike.setUserId(UUID.fromString(rs.getString("UserId")));
+                        publicationLike.setCreateDate(rs.getTimestamp("CreateDate").toLocalDateTime());
                         publicationLike.setIsLike(rs.getBoolean("IsLike"));
                     }
                 }
@@ -69,7 +71,6 @@ public class PublicationLikeDAL {
     }
 
     // </editor-fold> 
-    
     // <editor-fold defaultstate="collapsed" desc="DELETE">
     public static int eliminar(PublicationLike pPublicationLike) throws Exception {
         int result;

@@ -75,7 +75,7 @@ public class CommentDALIT {
         }
         assertTrue(pComment.getId().equals(currentComment.getId()));
         Publication pPublication = new Publication();
-        PublicationDAL.eliminar(PublicationDAL.getPublications(pPublication).get(0));
+        assertTrue(PublicationDAL.eliminar(PublicationDAL.getPublications(pPublication).get(0)) == 1);
     }
 
     /**
