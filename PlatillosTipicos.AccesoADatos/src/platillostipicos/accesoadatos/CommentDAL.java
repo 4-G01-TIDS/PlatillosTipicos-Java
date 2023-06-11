@@ -46,8 +46,7 @@ public class CommentDAL {
         /* SELECT u.Id(indice 1), u.Content(indice 2), u.CreateDate(indice 3),
          u.UserId(indice 4), u.PublicationId(indice 5) * FROM Comment */
         pIndex++;
-        String idString = pResultSet.getString(pIndex);
-        pComment.setId(idString != null ? UUID.fromString(idString) : null);
+        pComment.setId(UUID.fromString(pResultSet.getString(pIndex)));
 
         pIndex++;
         pComment.setContent(pResultSet.getString(pIndex));
@@ -56,12 +55,10 @@ public class CommentDAL {
         pComment.setCreateDate(pResultSet.getTimestamp(pIndex).toLocalDateTime());
 
         pIndex++;
-        String userIdString = pResultSet.getString(pIndex);
-        pComment.setUserId(userIdString != null ? UUID.fromString(userIdString) : null);
+        pComment.setUserId(UUID.fromString(pResultSet.getString(pIndex)));
 
         pIndex++;
-        String publicationIdString = pResultSet.getString(pIndex);
-        pComment.setPublicationId(publicationIdString != null ? UUID.fromString(publicationIdString) : null);
+        pComment.setPublicationId(UUID.fromString(pResultSet.getString(pIndex)));
 
         return pIndex;
     }
